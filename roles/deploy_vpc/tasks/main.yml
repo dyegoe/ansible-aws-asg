@@ -12,4 +12,5 @@
       TagProject: "{{ project_name }}"
       Ipv4Block: "10.10.0.0/16"
     tags:
-      Stack: "{{ project_name }}-vpc"
+      Stack: "vpc"
+      Project: "{{ project_name }}"
