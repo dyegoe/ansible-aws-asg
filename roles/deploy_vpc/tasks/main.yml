@@ -5,7 +5,7 @@
     aws_secret_key: "{{ aws_secret_key }}"
     stack_name: "{{ project_name }}-vpc"
     state: "present"
-    region: "us-east-1"
+    region: "{{ aws_region }}"
     template: "roles/deploy_vpc/files/vpc.json"
     template_parameters:
       TagProject: "{{ project_name }}"
