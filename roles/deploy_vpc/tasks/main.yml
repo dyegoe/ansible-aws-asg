@@ -1,0 +1,15 @@
+---
+- name: create a cloudformation stack
+  cloudformation:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    stack_name: "{{ project_name }}-vpc"
+    state: "present"
+    region: "us-east-1"
+    template: "roles/deploy_vpc/files/vpc.json"
+    template_parameters:
+      TagName: "{{ project_name }}-vpc"
+      TagProject: "{{ project_name }}"
+      Ipv4Block: "10.10.0.0/16"
+    tags:
+      Stack: "{{ project_name }}-vpc"

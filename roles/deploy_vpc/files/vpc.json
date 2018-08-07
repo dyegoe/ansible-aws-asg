@@ -1,0 +1,48 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Create a VPC scenario 1",
+    "Parameters": {
+        "Ipv4Block": {
+            "Description": "IPv4 block with CIDR",
+            "Type": "String",
+            "Default": "10.0.0.0/16"
+        },
+        "TagName": {
+            "Description": "Tag Name",
+            "Type": "String",
+            "Default": "ansible-vpc"
+        },
+        "TagProject": {
+            "Description": "Tag Project",
+            "Type": "String",
+            "Default": "test"
+        }
+    },
+    "Resources": {
+        "myVPC": {
+            "Type": "AWS::EC2::VPC",
+            "Properties": {
+                "CidrBlock": {
+                    "Ref": "Ipv4Block"
+                },
+                "EnableDnsSupport": "true",
+                "EnableDnsHostnames": "false",
+                "InstanceTenancy": "default",
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": {
+                            "Ref": "TagName"
+                        }
+                    },
+                    {
+                        "Key": "Project",
+                        "Value": {
+                            "Ref": "TagProject"
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}
