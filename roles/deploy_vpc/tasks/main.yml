@@ -8,9 +8,11 @@
     region: "us-east-1"
     template: "roles/deploy_vpc/files/vpc.json"
     template_parameters:
-      TagName: "{{ project_name }}-vpc"
       TagProject: "{{ project_name }}"
-      Ipv4Block: "10.10.0.0/16"
+      VpcCidrBlock: "10.10.0.0/16"
+      Subnet1CidrBlock: "10.10.1.0/24"
+      Subnet2CidrBlock: "10.10.2.0/24"
+      Subnet3CidrBlock: "10.10.3.0/24"
     tags:
-      Stack: "vpc"
+      Stack: "{{ project_name }}-vpc"
       Project: "{{ project_name }}"
