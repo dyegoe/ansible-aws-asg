@@ -1,0 +1,5 @@
+---
+- name: Remove VPC stack
+  cloudformation:
+    stack_name: "{{ project_name }}-vpc"
+    state: "absent"
