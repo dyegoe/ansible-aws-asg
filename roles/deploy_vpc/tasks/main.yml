@@ -1,9 +1,13 @@
 ---
+- name: Set VPC stack name
+  set_fact:
+    vpc_stack_name: "{{ project_name }}-vpc"
+
 - name: Deploy a VPC stack
   cloudformation:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
-    stack_name: "{{ project_name }}-vpc"
+    stack_name: "{{ vpc_stack_name }}"
     state: "present"
     region: "{{ aws_region }}"
     template: "roles/deploy_vpc/files/vpc.json"
@@ -14,5 +18,15 @@
       Subnet2CidrBlock: "10.10.2.0/24"
       Subnet3CidrBlock: "10.10.3.0/24"
     tags:
-      Stack: "{{ project_name }}-vpc"
+      Stack: "{{ vpc_stack_name }}"
       Project: "{{ project_name }}"
+
+- name: Get VPC stack facts
+  cloudformation_facts:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    stack_name: "{{ vpc_stack_name }}"
+    region: "{{ aws_region }}"
+
+- debug:
+    msg: "{{ ansible_facts['cloudformation'][vpc_stack_name] }}"
