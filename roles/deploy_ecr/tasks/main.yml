@@ -27,3 +27,4 @@
 - name: Set variables with cloudformation output
   set_fact:
     ecr_url: "{{ ansible_facts['cloudformation'][ecr_stack_name]['stack_outputs']['Url'] }}"
+    ecr_repo_name: "{{ ansible_facts['cloudformation'][ecr_stack_name]['stack_outputs']['RepositoryName'] }}"
