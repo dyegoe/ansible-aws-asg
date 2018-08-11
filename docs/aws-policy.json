@@ -45,6 +45,15 @@
             "Resource": [
                 "*"
             ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ecr:*"
+            ],
+            "Resource": [
+                "*"
+            ]
         }
     ]
 }
