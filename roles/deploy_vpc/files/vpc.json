@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "Create a VPC scenario 1",
+    "Description": "Create a VPC with 3 subnets in 3 az",
     "Parameters": {
         "TagProject": {
             "Description": "Tag Project",
