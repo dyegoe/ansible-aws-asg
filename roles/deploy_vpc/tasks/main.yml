@@ -7,9 +7,9 @@
   cloudformation:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ aws_region }}"
     stack_name: "{{ vpc_stack_name }}"
     state: "present"
-    region: "{{ aws_region }}"
     template: "roles/deploy_vpc/files/vpc.json"
     template_parameters:
       TagProject: "{{ project_name }}"
@@ -25,21 +25,12 @@
   cloudformation_facts:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
-    stack_name: "{{ vpc_stack_name }}"
     region: "{{ aws_region }}"
+    stack_name: "{{ vpc_stack_name }}"
 
-- name: Set VPC ID
+- name: Set variables with cloudformation output
   set_fact:
     vpc_id: "{{ ansible_facts['cloudformation'][vpc_stack_name]['stack_outputs']['VpcId'] }}"
-
-- name: Set Subnet 1 ID
-  set_fact:
     subnet1_id: "{{ ansible_facts['cloudformation'][vpc_stack_name]['stack_outputs']['Subnet1Id'] }}"
-
-- name: Set Subnet 2 ID
-  set_fact:
     subnet2_id: "{{ ansible_facts['cloudformation'][vpc_stack_name]['stack_outputs']['Subnet2Id'] }}"
-
-- name: Set Subnet 3 ID
-  set_fact:
     subnet3_id: "{{ ansible_facts['cloudformation'][vpc_stack_name]['stack_outputs']['Subnet3Id'] }}"

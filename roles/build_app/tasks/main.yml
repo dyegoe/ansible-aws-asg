@@ -1,0 +1,32 @@
+---
+- name: Make sure that build dir exist
+  file:
+    path: "build/"
+    state: "directory"
+
+- name: Clone app repository into build/.
+  git:
+    repo: "{{ app_git_repo }}"
+    version: "master"
+    dest: "build/python-rest"
+
+- name: Get ecr credentials
+  aws_ecr_login:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ aws_region }}"
+  register: ecr_credentials
+
+- name: Docker login
+  docker_login:
+    registry: "{{ ecr_credentials['meta']['endpoint'] }}"
+    username: "{{ ecr_credentials['meta']['username'] }}"
+    password: "{{ ecr_credentials['meta']['token'] }}"
+    reauthorize: yes
+
+- name: Build app
+  docker_image:
+    name: "{{ ecr_url }}/{{ ecr_repo_name }}:latest"
+    state: present
+    path: "build/python-rest"
+    push: yes
