@@ -70,5 +70,6 @@
 
 - name: Set variables with cloudformation output
   set_fact:
-    alb_url: "{{ ansible_facts['cloudformation'][ec2_stack_name]['stack_outputs']['ALBUrl'] }}"
-    asg_sg: "{{ ansible_facts['cloudformation'][ec2_stack_name]['stack_outputs']['AutoclusterSecurityGroup'] }}"
+    alb_url: "{{ ansible_facts['cloudformation'][ec2_stack_name]['stack_outputs']['AlbUrl'] }}"
+    asg_sg: "{{ ansible_facts['cloudformation'][ec2_stack_name]['stack_outputs']['AsgSecurityGroup'] }}"
+    asg: "{{ ansible_facts['cloudformation'][ec2_stack_name]['stack_outputs']['AutoScalingGroup'] }}"

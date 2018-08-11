@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "Autoscaling to launch EC2 instance with docker installed",
+    "Description": "Autoscaling group to launch EC2 instance with docker installed",
     "Conditions": {},
     "Parameters": {
         "TagProject": {
@@ -70,7 +70,7 @@
     },
     "Metadata": {},
     "Resources": {
-        "AutoclusterRole": {
+        "AsgRole": {
             "Type": "AWS::IAM::Role",
             "Properties": {
                 "AssumeRolePolicyDocument": {
@@ -86,10 +86,10 @@
                 "Path": "/"
             }
         },
-        "AutoclusterPolicy": {
+        "AsgPolicy": {
             "Type": "AWS::IAM::Policy",
             "Properties": {
-                "PolicyName": "AutoclusterPolicy",
+                "PolicyName": "AsgPolicy",
                 "PolicyDocument": {
                     "Version": "2012-10-17",
                     "Statement": [
@@ -116,17 +116,17 @@
                         }
                     ]
                 },
-                "Roles": [ { "Ref": "AutoclusterRole" } ]
+                "Roles": [ { "Ref": "AsgRole" } ]
             }
         },
-        "AutoclusterInstanceProfile": {
+        "AsgInstanceProfile": {
             "Type": "AWS::IAM::InstanceProfile",
             "Properties": {
                 "Path": "/",
-                "Roles": [ { "Ref": "AutoclusterRole" } ]
+                "Roles": [ { "Ref": "AsgRole" } ]
             }
         },
-        "AutoclusterSecurityGroup": {
+        "AsgSecurityGroup": {
             "Type": "AWS::EC2::SecurityGroup",
             "Properties": {
                 "GroupDescription": "Open ports to instances",
@@ -142,7 +142,7 @@
                         "IpProtocol": "tcp",
                         "FromPort": { "Ref" : "ServerFromPort" },
                         "ToPort": { "Ref" : "ServerToPort" },
-                        "SourceSecurityGroupId" : { "Ref" : "ALBSecurityGroup" }
+                        "SourceSecurityGroupId" : { "Ref" : "AlbSecurityGroup" }
                     }
                 ],
                 "Tags": [
@@ -156,9 +156,9 @@
                     }
                 ]
             },
-            "DependsOn" : "ALBSecurityGroup"
+            "DependsOn" : "AlbSecurityGroup"
         },
-        "ALBSecurityGroup": {
+        "AlbSecurityGroup": {
             "Type": "AWS::EC2::SecurityGroup",
             "Properties": {
                 "GroupDescription": "Open ports to ALB",
@@ -188,7 +188,7 @@
             "Properties": {
                 "Name": { "Fn::Join": [ "", [ { "Ref": "TagProject" }, "-alb" ] ] },
                 "Scheme": { "Ref": "AlbScheme" },
-                "SecurityGroups": [{ "Ref": "ALBSecurityGroup" }],
+                "SecurityGroups": [{ "Ref": "AlbSecurityGroup" }],
                 "Subnets": { "Ref": "SubnetIds" },
                 "Tags": [
                     {
@@ -202,16 +202,16 @@
                 ]
             }
         },
-        "ALBListener": {
+        "AlbListener": {
             "Type": "AWS::ElasticLoadBalancingV2::Listener",
             "Properties": {
-                "DefaultActions": [ { "Type": "forward", "TargetGroupArn": { "Ref": "ALBTGDefault" } } ],
+                "DefaultActions": [ { "Type": "forward", "TargetGroupArn": { "Ref": "AlbTgDefault" } } ],
                 "LoadBalancerArn": { "Ref": "ApplicationLoadBalancer" },
                 "Port": 80,
                 "Protocol": "HTTP"
             }
         },
-        "ALBTGDefault": {
+        "AlbTgDefault": {
             "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
             "Properties": {
                 "HealthCheckIntervalSeconds" : 5,
@@ -228,15 +228,15 @@
                 "VpcId" : { "Ref": "VpcId" }
             }
         },
-        "AutoclusterLaunchConfig": {
+        "AsgLaunchConfig": {
             "Type": "AWS::AutoScaling::LaunchConfiguration",
             "Properties": {
                 "ImageId": { "Ref": "ImageId" },
                 "InstanceMonitoring": true,
                 "InstanceType": { "Ref": "InstanceType" },
-                "IamInstanceProfile": { "Ref": "AutoclusterInstanceProfile" },
+                "IamInstanceProfile": { "Ref": "AsgInstanceProfile" },
                 "KeyName": { "Ref": "KeyName" },
-                "SecurityGroups": [ { "Ref": "AutoclusterSecurityGroup" } ],
+                "SecurityGroups": [ { "Ref": "AsgSecurityGroup" } ],
                 "UserData": { "Fn::Base64": { "Fn::Join": [ "\n",
                             [ "#cloud-config",
                               "repo_update: true",
@@ -269,7 +269,7 @@
                 }
             }
         },
-        "AutoclusterAutoScalingGroup": {
+        "AutoScalingGroup": {
             "Type": "AWS::AutoScaling::AutoScalingGroup",
             "Properties": {
                 "AvailabilityZones": { "Ref": "SubnetAZ" },
@@ -279,8 +279,8 @@
                 "MaxSize": { "Ref": "MaxSize" },
                 "HealthCheckGracePeriod": 10,
                 "HealthCheckType": "ELB",
-                "LaunchConfigurationName": { "Ref": "AutoclusterLaunchConfig" },
-                "TargetGroupARNs": [ { "Ref": "ALBTGDefault" } ],
+                "LaunchConfigurationName": { "Ref": "AsgLaunchConfig" },
+                "TargetGroupARNs": [ { "Ref": "AlbTgDefault" } ],
                 "Tags": [
                     {
                         "Key": "Name",
@@ -297,13 +297,17 @@
         }
     },
     "Outputs": {
-        "AutoclusterSecurityGroup": {
+        "AsgSecurityGroup": {
             "Description": "Auto Cluster Security Group",
-            "Value": { "Ref": "AutoclusterSecurityGroup" }
+            "Value": { "Ref": "AsgSecurityGroup" }
         },
-        "ALBUrl": {
+        "AlbUrl": {
             "Description": "Aplication Load Balancer URL",
             "Value": { "Fn::GetAtt" : [ "ApplicationLoadBalancer", "DNSName" ] }
+        },
+        "AutoScalingGroup": {
+            "Description": "Auto Cluster Security Group",
+            "Value": { "Ref": "AutoScalingGroup" }
         }
     }
 }
