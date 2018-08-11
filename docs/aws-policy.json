@@ -58,11 +58,16 @@
         {
             "Action": [
                 "iam:AddRoleToInstanceProfile",
+                "iam:RemoveRoleFromInstanceProfile",
                 "iam:CreateInstanceProfile",
+                "iam:DeleteInstanceProfile",
                 "iam:CreatePolicy",
+                "iam:DeletePolicy",
                 "iam:CreateRole",
-                "iam:PassRole",
-                "iam:PutRolePolicy"
+                "iam:DeleteRole",
+                "iam:PutRolePolicy",
+                "iam:DeleteRolePolicy",
+                "iam:PassRole"
             ],
             "Effect": "Allow",
             "Resource": "*"
