@@ -34,39 +34,36 @@
       name: "amzn-ami-minimal-hvm-2018.03.0.20180622-x86_64-ebs"
   register: ami_facts
 
-- debug:
-    var: ansible_facts['cloudformation']
+- name: Deploy an Auto Scaling stack
+  cloudformation:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    stack_name: "{{ asg_stack_name }}"
+    state: "present"
+    region: "{{ aws_region }}"
+    template: "roles/deploy_ec2/files/ec2-asg.json"
+    template_parameters:
+      TagProject: "{{ project_name }}"
+      KeyName: "{{ project_name }}"
+      InstanceType: "t2.small"
+      ImageId: "{{ ami_facts['images'][0]['image_id'] }}"
+      VpcId: "{{ vpc_id }}"
+      SubnetIds: "{{ subnet1_id }},{{ subnet2_id }},{{ subnet3_id }}"
+      SubnetAZ: "{{ aws_region }}a,{{ aws_region }}b,{{ aws_region }}c"
+      SshPort: 5224
+      ServerFromPort: 5000
+      ServerToPort: 5100
+      MaxSize: 1
+      StartSize: 1 
+      AlbScheme: internet-facing
+      RegistryURL: "{{ ecr_url }}"
+    tags:
+      Stack: "{{ asg_stack_name }}"
+      Project: "{{ project_name }}"
 
-# - name: Deploy an Auto Scaling stack
-#   cloudformation:
-#     aws_access_key: "{{ aws_access_key }}"
-#     aws_secret_key: "{{ aws_secret_key }}"
-#     stack_name: "{{ asg_stack_name }}"
-#     state: "present"
-#     region: "{{ aws_region }}"
-#     template: "roles/deploy_ec2/files/ec2-asg.json"
-#     template_parameters:
-#       TagProject: "{{ project_name }}"
-#       KeyName: "{{ project_name }}"
-#       InstanceType: "t2.small"
-#       ImageId: "{{ ami_facts['images'][0]['image_id'] }}"
-#       VpcId: "{{ ansible_facts['cloudformation']['{{ project_name }}-vpc']['stack_outputs']['VpcId'] }}"
-#       SubnetIds: "{{ ansible_facts['cloudformation']['{{ project_name }}-vpc']['stack_outputs']['Subnet1'] }},{{ ansible_facts['cloudformation']['{{ project_name }}-vpc']['stack_outputs']['Subnet2'] }},{{ ansible_facts['cloudformation']['{{ project_name }}-vpc']['stack_outputs']['Subnet3'] }}"
-#       SubnetAZ: "{{ aws_region }}a,{{ aws_region }}b,{{ aws_region }}c"
-#       SshPort: 5224
-#       ServerFromPort: 5000
-#       ServerToPort: 5100
-#       MaxSize: 1
-#       StartSize: 1 
-#       AlbScheme: internet-facing
-#       RegistryURL: 
-#     tags:
-#       Stack: "{{ vpc_stack_name }}"
-#       Project: "{{ project_name }}"
-
-# - name: Get VPC stack facts
-#   cloudformation_facts:
-#     aws_access_key: "{{ aws_access_key }}"
-#     aws_secret_key: "{{ aws_secret_key }}"
-#     stack_name: "{{ vpc_stack_name }}"
-#     region: "{{ aws_region }}"
+- name: Get ASG stack facts
+  cloudformation_facts:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    stack_name: "{{ asg_stack_name }}"
+    region: "{{ aws_region }}"

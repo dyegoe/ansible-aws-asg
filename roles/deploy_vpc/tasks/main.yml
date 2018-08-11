@@ -27,3 +27,19 @@
     aws_secret_key: "{{ aws_secret_key }}"
     stack_name: "{{ vpc_stack_name }}"
     region: "{{ aws_region }}"
+
+- name: Set VPC ID
+  set_fact:
+    vpc_id: "{{ ansible_facts['cloudformation'][vpc_stack_name]['stack_outputs']['VpcId'] }}"
+
+- name: Set Subnet 1 ID
+  set_fact:
+    subnet1_id: "{{ ansible_facts['cloudformation'][vpc_stack_name]['stack_outputs']['Subnet1Id'] }}"
+
+- name: Set Subnet 2 ID
+  set_fact:
+    subnet2_id: "{{ ansible_facts['cloudformation'][vpc_stack_name]['stack_outputs']['Subnet2Id'] }}"
+
+- name: Set Subnet 3 ID
+  set_fact:
+    subnet3_id: "{{ ansible_facts['cloudformation'][vpc_stack_name]['stack_outputs']['Subnet3Id'] }}"
