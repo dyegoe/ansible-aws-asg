@@ -8,6 +8,12 @@
     region: "{{ aws_region }}"
   register: key_pair
 
-- name: debug
-  debug:
-    var: key_pair
+- name: Make sure that files dir exist
+  file:
+    path: "files/"
+    state: "directory"
+
+- name: Copy private key content to a local file
+  copy:
+    content: "{{ key_pair['key']['private_key'] }}"
+    dest: "files/{{ project_name }}.pem"
