@@ -54,6 +54,18 @@
             "Resource": [
                 "*"
             ]
+        },
+        {
+            "Action": [
+                "iam:AddRoleToInstanceProfile",
+                "iam:CreateInstanceProfile",
+                "iam:CreatePolicy",
+                "iam:CreateRole",
+                "iam:PassRole",
+                "iam:PutRolePolicy"
+            ],
+            "Effect": "Allow",
+            "Resource": "*"
         }
     ]
 }
