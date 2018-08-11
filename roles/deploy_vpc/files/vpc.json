@@ -49,6 +49,7 @@
                 "VpcId": { "Ref": "VPC" },
                 "CidrBlock": { "Ref": "Subnet1CidrBlock" },
                 "AvailabilityZone": { "Fn::Join": [ "", [ { "Ref": "AWS::Region" }, "a" ] ] },
+                "MapPublicIpOnLaunch": true,
                 "Tags": [
                     {
                         "Key": "Name",
@@ -67,6 +68,7 @@
                 "VpcId": { "Ref": "VPC" },
                 "CidrBlock": { "Ref": "Subnet2CidrBlock" },
                 "AvailabilityZone": { "Fn::Join": [ "", [ { "Ref": "AWS::Region" }, "b" ] ] },
+                "MapPublicIpOnLaunch": true,
                 "Tags": [
                     {
                         "Key": "Name",
@@ -84,7 +86,9 @@
             "Properties": {
                 "VpcId": { "Ref": "VPC" },
                 "CidrBlock": { "Ref": "Subnet3CidrBlock" },
-                "AvailabilityZone": { "Fn::Join": [ "", [ { "Ref": "AWS::Region" }, "c" ] ] }, "Tags": [
+                "AvailabilityZone": { "Fn::Join": [ "", [ { "Ref": "AWS::Region" }, "c" ] ] },
+                "MapPublicIpOnLaunch": true,
+                "Tags": [
                     {
                         "Key": "Name",
                         "Value": { "Fn::Join": [ "", [ { "Ref": "TagProject" }, "-subnet-public-c" ] ] }
