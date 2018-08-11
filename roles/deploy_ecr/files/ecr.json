@@ -1,0 +1,22 @@
+{
+    "Parameters": {
+      "RepositoryName": {
+        "Type": "String"
+      }
+    },
+    "Resources": {
+      "ECR": {
+        "Type": "AWS::ECR::Repository",
+        "Properties": {
+          "LifecyclePolicy": {},
+          "RepositoryName": { "Ref": "RepositoryName" }
+        }
+      }
+    },
+    "Outputs": {
+      "Arn": {
+        "Value": { "Fn::GetAtt": [ "ECR", "Arn" ]
+        }
+      }
+    }
+  }
