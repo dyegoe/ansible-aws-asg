@@ -20,7 +20,7 @@
         "Arn": {
             "Value": { "Fn::GetAtt": [ "ECR", "Arn" ] }
         },
-        "Hostname": {
+        "Url": {
             "Value": { "Fn::Join": [ ".", [ { "Ref": "AWS::AccountId" }, "dkr.ecr", { "Ref": "AWS::Region" }, { "Fn::Join": [ "/", [ "amazonaws.com", { "Ref": "RepositoryName" } ] ] } ] ] }
         }
     }
