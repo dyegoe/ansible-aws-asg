@@ -67,3 +67,8 @@
     aws_secret_key: "{{ aws_secret_key }}"
     stack_name: "{{ asg_stack_name }}"
     region: "{{ aws_region }}"
+
+- name: Set variables with cloudformation output
+  set_fact:
+    alb_url: "{{ ansible_facts['cloudformation'][ec2_stack_name]['stack_outputs']['ALBUrl'] }}"
+    asg_sg: "{{ ansible_facts['cloudformation'][ec2_stack_name]['stack_outputs']['AutoclusterSecurityGroup'] }}"
