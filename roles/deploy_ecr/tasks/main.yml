@@ -7,9 +7,9 @@
   cloudformation:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ aws_region }}"
     stack_name: "{{ ecr_stack_name }}"
     state: "present"
-    region: "{{ aws_region }}"
     template: "roles/deploy_ecr/files/ecr.json"
     template_parameters:
       RepositoryName: "{{ project_name }}"
@@ -21,8 +21,8 @@
   cloudformation_facts:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
-    stack_name: "{{ ecr_stack_name }}"
     region: "{{ aws_region }}"
+    stack_name: "{{ ecr_stack_name }}"
 
 - name: Set variables with cloudformation output
   set_fact:

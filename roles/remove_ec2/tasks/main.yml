@@ -3,14 +3,14 @@
   cloudformation:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ aws_region }}"
     stack_name: "{{ project_name }}-asg"
     state: "absent"
-    region: "{{ aws_region }}"
 
 - name: Remove ec2 key pair
   ec2_key:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ aws_region }}"
     name: "{{ project_name }}"
     state: "absent"
-    region: "{{ aws_region }}"
