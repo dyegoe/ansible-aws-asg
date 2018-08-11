@@ -23,3 +23,7 @@
     aws_secret_key: "{{ aws_secret_key }}"
     stack_name: "{{ ecr_stack_name }}"
     region: "{{ aws_region }}"
+
+- name: Set ECR Id
+  set_fact:
+    ecr_url: "{{ ansible_facts['cloudformation'][ecr_stack_name]['stack_outputs']['Url'] }}"
