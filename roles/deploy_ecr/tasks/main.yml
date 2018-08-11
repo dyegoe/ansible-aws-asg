@@ -1,0 +1,29 @@
+---
+- name: Set ECR stack name
+  set_fact:
+    ecr_stack_name: "{{ project_name }}-ecr"
+
+- name: Deploy a ECR stack
+  cloudformation:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    stack_name: "{{ ecr_stack_name }}"
+    state: "present"
+    region: "{{ aws_region }}"
+    template: "roles/deploy_ecr/files/ecr.json"
+    template_parameters:
+      RepositoryName: "{{ project_name }}"
+    tags:
+      Stack: "{{ ecr_stack_name }}"
+      Project: "{{ project_name }}"
+
+- name: Get ECR stack facts
+  cloudformation_facts:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    stack_name: "{{ ecr_stack_name }}"
+    region: "{{ aws_region }}"
+
+- name: Set ECR Id
+  set_fact:
+    ecr_url: "{{ ansible_facts['cloudformation'][ecr_stack_name]['stack_outputs']['Url'] }}"

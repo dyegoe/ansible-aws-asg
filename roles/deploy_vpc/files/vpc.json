@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "Create a VPC scenario 1",
+    "Description": "Create a VPC with 3 subnets in 3 az",
     "Parameters": {
         "TagProject": {
             "Description": "Tag Project",
@@ -34,7 +34,8 @@
                 "Tags": [
                     {
                         "Key": "Name",
-                        "Value": { "Fn::Join": [ "", [ { "Ref": "TagProject" }, "-vpc" ] ] } },
+                        "Value": { "Fn::Join": [ "", [ { "Ref": "TagProject" }, "-vpc" ] ] }
+                    },
                     {
                         "Key": "Project",
                         "Value": { "Ref": "TagProject" }
@@ -51,7 +52,8 @@
                 "Tags": [
                     {
                         "Key": "Name",
-                        "Value": { "Fn::Join": [ "", [ { "Ref": "TagProject" }, "-subnet-public-a" ] ] } },
+                        "Value": { "Fn::Join": [ "", [ { "Ref": "TagProject" }, "-subnet-public-a" ] ] }
+                    },
                     {
                         "Key": "Project",
                         "Value": { "Ref": "TagProject" }
@@ -68,7 +70,8 @@
                 "Tags": [
                     {
                         "Key": "Name",
-                        "Value": { "Fn::Join": [ "", [ { "Ref": "TagProject" }, "-subnet-public-b" ] ] } },
+                        "Value": { "Fn::Join": [ "", [ { "Ref": "TagProject" }, "-subnet-public-b" ] ] }
+                    },
                     {
                         "Key": "Project",
                         "Value": { "Ref": "TagProject" }
@@ -99,7 +102,8 @@
                 "Tags": [
                     {
                         "Key": "Name",
-                        "Value": { "Fn::Join": [ "", [ { "Ref": "TagProject" }, "-igw" ] ] } },
+                        "Value": { "Fn::Join": [ "", [ { "Ref": "TagProject" }, "-igw" ] ] }
+                    },
                     {
                         "Key": "Project",
                         "Value": { "Ref": "TagProject" }

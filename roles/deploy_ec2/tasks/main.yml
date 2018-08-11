@@ -8,6 +8,62 @@
     region: "{{ aws_region }}"
   register: key_pair
 
-- name: debug
-  debug:
-    var: key_pair
+- name: Make sure that files dir exist
+  file:
+    path: "files/"
+    state: "directory"
+  when: key_pair['changed']
+
+- name: Copy private key content to a local file
+  copy:
+    content: "{{ key_pair['key']['private_key'] }}"
+    dest: "files/{{ project_name }}.pem"
+  when: key_pair['changed']
+
+- name: Set VPC stack name
+  set_fact:
+    asg_stack_name: "{{ project_name }}-asg"
+
+- name: Gather facts about amzn-ami-minimal-hvm-2018.03.0.20180622-x86_64-ebs
+  ec2_ami_facts:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ aws_region }}"
+    owners: amazon
+    filters:
+      name: "amzn-ami-minimal-hvm-2018.03.0.20180622-x86_64-ebs"
+  register: ami_facts
+
+- name: Deploy an Auto Scaling stack
+  cloudformation:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    stack_name: "{{ asg_stack_name }}"
+    state: "present"
+    region: "{{ aws_region }}"
+    template: "roles/deploy_ec2/files/ec2-asg.json"
+    template_parameters:
+      TagProject: "{{ project_name }}"
+      KeyName: "{{ project_name }}"
+      InstanceType: "t2.small"
+      ImageId: "{{ ami_facts['images'][0]['image_id'] }}"
+      VpcId: "{{ vpc_id }}"
+      SubnetIds: "{{ subnet1_id }},{{ subnet2_id }},{{ subnet3_id }}"
+      SubnetAZ: "{{ aws_region }}a,{{ aws_region }}b,{{ aws_region }}c"
+      SshPort: 5224
+      ServerFromPort: 5000
+      ServerToPort: 5100
+      MaxSize: 1
+      StartSize: 1 
+      AlbScheme: internet-facing
+      RegistryURL: "{{ ecr_url }}"
+    tags:
+      Stack: "{{ asg_stack_name }}"
+      Project: "{{ project_name }}"
+
+- name: Get ASG stack facts
+  cloudformation_facts:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    stack_name: "{{ asg_stack_name }}"
+    region: "{{ aws_region }}"

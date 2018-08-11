@@ -1,0 +1,309 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Autoscaling to launch EC2 instance with docker installed",
+    "Conditions": {},
+    "Parameters": {
+        "TagProject": {
+            "Description": "Tag Project",
+            "Type": "String"
+        },
+        "KeyName": {
+            "Description": "Name of an existing EC2 KeyPair to enable SSH access to the instances",
+            "Type": "AWS::EC2::KeyPair::KeyName",
+            "ConstraintDescription": "Can contain only ASCII characters."
+        },
+        "InstanceType": {
+            "Description": "EC2 instance type",
+            "Type": "String",
+            "Default": "t2.small",
+            "AllowedValues": [ "t2.micro", "t2.small", "t2.medium", "t2.large", "t2.xlarge", "t2.2xlarge" ],
+            "ConstraintDescription": "Must be a valid EC2 instance type"
+        },
+        "ImageId": {
+            "Description": "AMI Image Id",
+            "Type": "AWS::EC2::Image::Id"
+        },
+        "VpcId": {
+            "Description": "VPC associated with the provided subnets",
+            "Type": "AWS::EC2::VPC::Id"
+        },
+        "SubnetIds": {
+            "Description": "List of VPC subnet IDs for the scaling group",
+            "Type": "List<AWS::EC2::Subnet::Id>"
+        },
+        "SubnetAZ": {
+            "Description": "Availability Zone of the Subnet",
+            "Type": "List<AWS::EC2::AvailabilityZone::Name>"
+        },
+        "SshPort": {
+            "Description": "SSH Port",
+            "Type": "String"
+        },
+        "ServerFromPort": {
+            "Description": "Inital port range to open access on instances from LoadBalancer",
+            "Type": "Number"
+        },
+        "ServerToPort": {
+            "Description": "Final port range to open access on instances from LoadBalancer",
+            "Type": "Number"
+        },
+        "MaxSize": {
+            "Type": "Number",
+            "Default": "1",
+            "Description": "The maximum size of the Auto Scaling group"
+        },
+        "StartSize": {
+            "Type": "Number",
+            "Default": "1",
+            "Description": "Number of instances to launch"
+        },
+        "AlbScheme": {
+            "Description": "ALB Scheme. It should be internet-facing or internal.",
+            "Type": "String",
+            "AllowedValues": [ "internet-facing", "internal"],
+            "Default": "internet-facing"
+        },
+        "RegistryURL": {
+            "Description": "Registry URL to include as insecure registry",
+            "Type": "String"
+        }
+    },
+    "Metadata": {},
+    "Resources": {
+        "AutoclusterRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": { "Service": [ "ec2.amazonaws.com" ] },
+                            "Action": [ "sts:AssumeRole" ]
+                        }
+                    ]
+                },
+                "Path": "/"
+            }
+        },
+        "AutoclusterPolicy": {
+            "Type": "AWS::IAM::Policy",
+            "Properties": {
+                "PolicyName": "AutoclusterPolicy",
+                "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "ecr:GetAuthorizationToken",
+                                "ecr:BatchCheckLayerAvailability",
+                                "ecr:GetDownloadUrlForLayer",
+                                "ecr:GetRepositoryPolicy",
+                                "ecr:DescribeRepositories",
+                                "ecr:ListImages",
+                                "ecr:BatchGetImage"
+                            ],
+                            "Resource": [ "*" ]
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "autoscaling:DescribeAutoScalingInstances",
+                                "ec2:DescribeInstances"
+                            ],
+                            "Resource": [ "*" ]
+                        }
+                    ]
+                },
+                "Roles": [ { "Ref": "AutoclusterRole" } ]
+            }
+        },
+        "AutoclusterInstanceProfile": {
+            "Type": "AWS::IAM::InstanceProfile",
+            "Properties": {
+                "Path": "/",
+                "Roles": [ { "Ref": "AutoclusterRole" } ]
+            }
+        },
+        "AutoclusterSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "GroupDescription": "Open ports to instances",
+                "VpcId": { "Ref": "VpcId" },
+                "SecurityGroupIngress": [
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": { "Ref": "SshPort" },
+                        "ToPort": { "Ref": "SshPort" },
+                        "CidrIp": "0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": { "Ref" : "ServerFromPort" },
+                        "ToPort": { "Ref" : "ServerToPort" },
+                        "SourceSecurityGroupId" : { "Ref" : "ALBSecurityGroup" }
+                    }
+                ],
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": { "Fn::Join": [ "", [ { "Ref": "TagProject" }, "-ac-sg" ] ] }
+                    },
+                    {
+                        "Key": "Project",
+                        "Value": { "Ref": "TagProject" }
+                    }
+                ]
+            },
+            "DependsOn" : "ALBSecurityGroup"
+        },
+        "ALBSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "GroupDescription": "Open ports to ALB",
+                "VpcId": { "Ref": "VpcId" },
+                "SecurityGroupIngress": [
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "80",
+                        "ToPort": "80",
+                        "CidrIp": "0.0.0.0/0"
+                    }
+                ],
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": { "Fn::Join": [ "", [ { "Ref": "TagProject" }, "-alb-sg" ] ] }
+                    },
+                    {
+                        "Key": "Project",
+                        "Value": { "Ref": "TagProject" }
+                    }
+                ]
+            }
+        },
+        "ApplicationLoadBalancer": {
+            "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+            "Properties": {
+                "Name": { "Fn::Join": [ "", [ { "Ref": "TagProject" }, "-alb" ] ] },
+                "Scheme": { "Ref": "AlbScheme" },
+                "SecurityGroups": [{ "Ref": "ALBSecurityGroup" }],
+                "Subnets": { "Ref": "SubnetIds" },
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": { "Fn::Join": [ "", [ { "Ref": "TagProject" }, "-alb" ] ] }
+                    },
+                    {
+                        "Key": "Project",
+                        "Value": { "Ref": "TagProject" }
+                    }
+                ]
+            }
+        },
+        "ALBListener": {
+            "Type": "AWS::ElasticLoadBalancingV2::Listener",
+            "Properties": {
+                "DefaultActions": [ { "Type": "forward", "TargetGroupArn": { "Ref": "ALBTGDefault" } } ],
+                "LoadBalancerArn": { "Ref": "ApplicationLoadBalancer" },
+                "Port": 80,
+                "Protocol": "HTTP"
+            }
+        },
+        "ALBTGDefault": {
+            "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+            "Properties": {
+                "HealthCheckIntervalSeconds" : 5,
+                "HealthCheckPath" : "/health",
+                "HealthCheckTimeoutSeconds" : 2,
+                "HealthyThresholdCount" : 5,
+                "Matcher" : { "HttpCode" : "200" },
+                "Name": { "Fn::Join": ["", [ { "Ref": "TagProject" }, "-default" ] ] },
+                "Port" : 5000,
+                "Protocol" : "HTTP",
+                "Targets" : [],
+                "TargetType" : "instance",
+                "UnhealthyThresholdCount" : 2,
+                "VpcId" : { "Ref": "VpcId" }
+            }
+        },
+        "AutoclusterLaunchConfig": {
+            "Type": "AWS::AutoScaling::LaunchConfiguration",
+            "Properties": {
+                "ImageId": { "Ref": "ImageId" },
+                "InstanceMonitoring": true,
+                "InstanceType": { "Ref": "InstanceType" },
+                "IamInstanceProfile": { "Ref": "AutoclusterInstanceProfile" },
+                "KeyName": { "Ref": "KeyName" },
+                "SecurityGroups": [ { "Ref": "AutoclusterSecurityGroup" } ],
+                "UserData": { "Fn::Base64": { "Fn::Join": [ "\n",
+                            [ "#cloud-config",
+                              "repo_update: true",
+                              "repo_upgrade: all",
+                              "",
+                              "packages:",
+                              "  - docker",
+                              "  - git",
+                              "  - python27-pip",
+                              "",
+                              "runcmd:",
+                              "  - rpm -ivh http://rpmfind.net/linux/centos/7.5.1804/os/x86_64/Packages/bash-completion-2.1-6.el7.noarch.rpm",
+                              "  - pip install --upgrade pip",
+                              "  - pip install docker-py",
+                              { "Fn::Sub": "  - sed -i -E 's?^(#|)Port .*?Port ${SshPort}?' /etc/ssh/sshd_config" },
+                              "  - service sshd restart",
+                              "  - echo '{' > /etc/docker/daemon.json",
+                              "  - echo '    \"insecure-registries\":' >> /etc/docker/daemon.json",
+                              "  - echo '    [' >> /etc/docker/daemon.json",
+                              { "Fn::Sub": "  - echo '        \"${RegistryURL}\"' >> /etc/docker/daemon.json" },
+                              "  - echo '    ]' >> /etc/docker/daemon.json",
+                              "  - echo '}' >> /etc/docker/daemon.json",
+                              "  - chkconfig docker on",
+                              "  - service docker restart",
+                              "  - curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose",
+                              "  - curl -L https://raw.githubusercontent.com/docker/compose/1.21.2/contrib/completion/bash/docker-compose -o /etc/bash_completion.d/docker-compose",
+                              "  - curl -L https://raw.githubusercontent.com/docker/docker-ce/master/components/cli/contrib/completion/bash/docker -o /etc/bash_completion.d/docker",
+                              "  - chmod +x /usr/local/bin/docker-compose"
+                            ] ] }
+                }
+            }
+        },
+        "AutoclusterAutoScalingGroup": {
+            "Type": "AWS::AutoScaling::AutoScalingGroup",
+            "Properties": {
+                "AvailabilityZones": { "Ref": "SubnetAZ" },
+                "DesiredCapacity": { "Ref": "StartSize" },
+                "VPCZoneIdentifier": { "Ref": "SubnetIds" },
+                "MinSize": 1,
+                "MaxSize": { "Ref": "MaxSize" },
+                "HealthCheckGracePeriod": 10,
+                "HealthCheckType": "ELB",
+                "LaunchConfigurationName": { "Ref": "AutoclusterLaunchConfig" },
+                "TargetGroupARNs": [ { "Ref": "ALBTGDefault" } ],
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": { "Fn::Join": [ "", [ { "Ref": "TagProject" }, "-ec2" ] ] },
+                        "PropagateAtLaunch": "true"
+                    },
+                    {
+                        "Key": "Project",
+                        "Value": { "Ref": "TagProject" },
+                        "PropagateAtLaunch": "true"
+                    }
+                ]
+            }
+        }
+    },
+    "Outputs": {
+        "AutoclusterSecurityGroup": {
+            "Description": "Auto Cluster Security Group",
+            "Value": { "Ref": "AutoclusterSecurityGroup" }
+        },
+        "ALBUrl": {
+            "Description": "Aplication Load Balancer URL",
+            "Value": { "Fn::GetAtt" : [ "ApplicationLoadBalancer", "DNSName" ] }
+        }
+    }
+}

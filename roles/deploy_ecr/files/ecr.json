@@ -1,0 +1,27 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Create a ECR",
+    "Parameters": {
+        "RepositoryName": {
+            "Type": "String"
+        }
+    },
+    "Resources": {
+        "ECR": {
+            "Type": "AWS::ECR::Repository",
+            "Properties": {
+                "RepositoryName": {
+                    "Ref": "RepositoryName"
+                }
+            }
+        }
+    },
+    "Outputs": {
+        "Arn": {
+            "Value": { "Fn::GetAtt": [ "ECR", "Arn" ] }
+        },
+        "Url": {
+            "Value": { "Fn::Join": [ ".", [ { "Ref": "AWS::AccountId" }, "dkr.ecr", { "Ref": "AWS::Region" }, { "Fn::Join": [ "/", [ "amazonaws.com", { "Ref": "RepositoryName" } ] ] } ] ] }
+        }
+    }
+}
