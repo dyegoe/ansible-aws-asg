@@ -1,2 +1,2 @@
 #!/bin/sh
-docker run --name ansible-aws-asg -v /home/dyego/PycharmProjects/ansible-aws-asg:/home/dyego/ansible-aws-asg -w /home/dyego/ansible-aws-asg -u dyego -d ansible-aws-asg:latest tail -f /dev/null
+docker run --name ansible-aws-asg -v /home/dyego/PycharmProjects/ansible-aws-asg:/home/dyego/ansible-aws-asg -w /home/dyego/ansible-aws-asg --privileged -d ansible-aws-asg:latest
