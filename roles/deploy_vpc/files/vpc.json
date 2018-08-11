@@ -43,63 +43,6 @@
                 ]
             }
         },
-        "Subnet1": {
-            "Type": "AWS::EC2::Subnet",
-            "Properties": {
-                "VpcId": { "Ref": "VPC" },
-                "CidrBlock": { "Ref": "Subnet1CidrBlock" },
-                "AvailabilityZone": { "Fn::Join": [ "", [ { "Ref": "AWS::Region" }, "a" ] ] },
-                "MapPublicIpOnLaunch": true,
-                "Tags": [
-                    {
-                        "Key": "Name",
-                        "Value": { "Fn::Join": [ "", [ { "Ref": "TagProject" }, "-subnet-public-a" ] ] }
-                    },
-                    {
-                        "Key": "Project",
-                        "Value": { "Ref": "TagProject" }
-                    }
-                ]
-            }
-        },
-        "Subnet2": {
-            "Type": "AWS::EC2::Subnet",
-            "Properties": {
-                "VpcId": { "Ref": "VPC" },
-                "CidrBlock": { "Ref": "Subnet2CidrBlock" },
-                "AvailabilityZone": { "Fn::Join": [ "", [ { "Ref": "AWS::Region" }, "b" ] ] },
-                "MapPublicIpOnLaunch": true,
-                "Tags": [
-                    {
-                        "Key": "Name",
-                        "Value": { "Fn::Join": [ "", [ { "Ref": "TagProject" }, "-subnet-public-b" ] ] }
-                    },
-                    {
-                        "Key": "Project",
-                        "Value": { "Ref": "TagProject" }
-                    }
-                ]
-            }
-        },
-        "Subnet3": {
-            "Type": "AWS::EC2::Subnet",
-            "Properties": {
-                "VpcId": { "Ref": "VPC" },
-                "CidrBlock": { "Ref": "Subnet3CidrBlock" },
-                "AvailabilityZone": { "Fn::Join": [ "", [ { "Ref": "AWS::Region" }, "c" ] ] },
-                "MapPublicIpOnLaunch": true,
-                "Tags": [
-                    {
-                        "Key": "Name",
-                        "Value": { "Fn::Join": [ "", [ { "Ref": "TagProject" }, "-subnet-public-c" ] ] }
-                    },
-                    {
-                        "Key": "Project",
-                        "Value": { "Ref": "TagProject" }
-                    }
-                ]
-            }
-        },
         "InternetGateway": {
             "Type": "AWS::EC2::InternetGateway",
             "Properties": {
@@ -146,7 +89,85 @@
                 "DestinationCidrBlock" : "0.0.0.0/0",
                 "GatewayId" : { "Ref" : "InternetGateway" }
             }
-        }
+        },
+        "Subnet1": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+                "VpcId": { "Ref": "VPC" },
+                "CidrBlock": { "Ref": "Subnet1CidrBlock" },
+                "AvailabilityZone": { "Fn::Join": [ "", [ { "Ref": "AWS::Region" }, "a" ] ] },
+                "MapPublicIpOnLaunch": true,
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": { "Fn::Join": [ "", [ { "Ref": "TagProject" }, "-subnet-public-a" ] ] }
+                    },
+                    {
+                        "Key": "Project",
+                        "Value": { "Ref": "TagProject" }
+                    }
+                ]
+            }
+        },
+        "Subnet1RouteTableAssociation" : {
+            "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+            "Properties" : {
+               "SubnetId" : { "Ref" : "Subnet1" },
+               "RouteTableId" : { "Ref" : "RouteTable" }
+            }
+         },
+        "Subnet2": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+                "VpcId": { "Ref": "VPC" },
+                "CidrBlock": { "Ref": "Subnet2CidrBlock" },
+                "AvailabilityZone": { "Fn::Join": [ "", [ { "Ref": "AWS::Region" }, "b" ] ] },
+                "MapPublicIpOnLaunch": true,
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": { "Fn::Join": [ "", [ { "Ref": "TagProject" }, "-subnet-public-b" ] ] }
+                    },
+                    {
+                        "Key": "Project",
+                        "Value": { "Ref": "TagProject" }
+                    }
+                ]
+            }
+        },
+        "Subnet2RouteTableAssociation" : {
+            "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+            "Properties" : {
+               "SubnetId" : { "Ref" : "Subnet2" },
+               "RouteTableId" : { "Ref" : "RouteTable" }
+            }
+         },
+        "Subnet3": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+                "VpcId": { "Ref": "VPC" },
+                "CidrBlock": { "Ref": "Subnet3CidrBlock" },
+                "AvailabilityZone": { "Fn::Join": [ "", [ { "Ref": "AWS::Region" }, "c" ] ] },
+                "MapPublicIpOnLaunch": true,
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": { "Fn::Join": [ "", [ { "Ref": "TagProject" }, "-subnet-public-c" ] ] }
+                    },
+                    {
+                        "Key": "Project",
+                        "Value": { "Ref": "TagProject" }
+                    }
+                ]
+            }
+        },
+        "Subnet3RouteTableAssociation" : {
+            "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+            "Properties" : {
+               "SubnetId" : { "Ref" : "Subnet3" },
+               "RouteTableId" : { "Ref" : "RouteTable" }
+            }
+         }
     },
     "Outputs": {
         "VpcId": {

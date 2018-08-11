@@ -3,9 +3,9 @@
   ec2_key:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ aws_region }}"
     name: "{{ project_name }}"
     state: "present"
-    region: "{{ aws_region }}"
   register: key_pair
 
 - name: Make sure that files dir exist
@@ -38,9 +38,9 @@
   cloudformation:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ aws_region }}"
     stack_name: "{{ asg_stack_name }}"
     state: "present"
-    region: "{{ aws_region }}"
     template: "roles/deploy_ec2/files/ec2-asg.json"
     template_parameters:
       TagProject: "{{ project_name }}"
@@ -52,7 +52,7 @@
       SubnetAZ: "{{ aws_region }}a,{{ aws_region }}b,{{ aws_region }}c"
       SshPort: 5224
       ServerFromPort: 5000
-      ServerToPort: 5100
+      ServerToPort: 5000
       MaxSize: 1
       StartSize: 1 
       AlbScheme: internet-facing
@@ -65,11 +65,11 @@
   cloudformation_facts:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
-    stack_name: "{{ asg_stack_name }}"
     region: "{{ aws_region }}"
+    stack_name: "{{ asg_stack_name }}"
 
 - name: Set variables with cloudformation output
   set_fact:
-    alb_url: "{{ ansible_facts['cloudformation'][ec2_stack_name]['stack_outputs']['AlbUrl'] }}"
-    asg_sg: "{{ ansible_facts['cloudformation'][ec2_stack_name]['stack_outputs']['AsgSecurityGroup'] }}"
-    asg: "{{ ansible_facts['cloudformation'][ec2_stack_name]['stack_outputs']['AutoScalingGroup'] }}"
+    alb_url: "{{ ansible_facts['cloudformation'][asg_stack_name]['stack_outputs']['AlbUrl'] }}"
+    asg_sg: "{{ ansible_facts['cloudformation'][asg_stack_name]['stack_outputs']['AsgSecurityGroup'] }}"
+    asg: "{{ ansible_facts['cloudformation'][asg_stack_name]['stack_outputs']['AutoScalingGroup'] }}"
