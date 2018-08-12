@@ -1,10 +1,27 @@
 #!/usr/bin/python
-# Reference: https://blog.toast38coza.me/custom-ansible-module-hello-world/
+"""
+    This python script work as an ansible module.
+    It covers to get the authentication token from ECR using boto3 library.
+    It returns the token, user and endpoint.
+    To develop it, I used as reference this URL: https://blog.toast38coza.me/custom-ansible-module-hello-world/
+"""
+
+__author__ = "Dyego Eugenio"
+__copyright__ = "Copyleft with your own risk"
+__credits__ = ["Dyego Eugenio", "Christo Crampton"]
+__license__ = "GPL"
+__version__ = "1.0.0"
+__maintainer__ = "Dyego Eugenio"
+__email__ = "dyegoe@gmail.com"
+__status__ = "Production"
+
 
 DOCUMENTATION = '''
 ---
 module: aws_ecr_login
 short_description: Get auth data from ecr
+author: Dyego Eugenio
+email: dyegoe@gmail.com
 '''
 
 EXAMPLES = '''
