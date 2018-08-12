@@ -220,7 +220,7 @@
                 "HealthyThresholdCount" : 5,
                 "Matcher" : { "HttpCode" : "200" },
                 "Name": { "Fn::Join": ["", [ { "Ref": "TagProject" }, "-default" ] ] },
-                "Port" : 5000,
+                "Port" : { "Ref" : "ServerFromPort" },
                 "Protocol" : "HTTP",
                 "Targets" : [],
                 "TargetType" : "instance",
