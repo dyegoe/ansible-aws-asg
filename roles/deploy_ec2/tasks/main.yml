@@ -18,6 +18,7 @@
   copy:
     content: "{{ key_pair['key']['private_key'] }}"
     dest: "files/{{ project_name }}.pem"
+    mode: 0400
   when: key_pair['changed']
 
 - name: Set VPC stack name
@@ -50,9 +51,9 @@
       VpcId: "{{ vpc_id }}"
       SubnetIds: "{{ subnet1_id }},{{ subnet2_id }},{{ subnet3_id }}"
       SubnetAZ: "{{ aws_region }}a,{{ aws_region }}b,{{ aws_region }}c"
-      SshPort: 5224
-      ServerFromPort: 5000
-      ServerToPort: 5000
+      SshPort: "{{ ec2_sshport }}"
+      ServerFromPort: "{{ app_port }}"
+      ServerToPort: "{{ app_port }}"
       MaxSize: 1
       StartSize: 1 
       AlbScheme: internet-facing
