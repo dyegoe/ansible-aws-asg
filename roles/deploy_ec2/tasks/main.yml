@@ -32,7 +32,7 @@
     region: "{{ aws_region }}"
     owners: amazon
     filters:
-      name: "amzn-ami-minimal-hvm-2018.03.0.20180622-x86_64-ebs"
+      name: "{{ ec2_image_name }}"
   register: ami_facts
 
 - name: Deploy an Auto Scaling stack
