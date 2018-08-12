@@ -34,7 +34,7 @@
   set_fact:
     rds_db_host: "{{ ansible_facts['cloudformation'][rds_stack_name]['stack_outputs']['DatabaseHostname'] }}"
     rds_db_port: "{{ ansible_facts['cloudformation'][rds_stack_name]['stack_outputs']['DatabasePort'] }}"
-    rds_db_name: "{{ ansible_facts['cloudformation'][rds_stack_name]['stack_outputs']['DBName'] }}"
+    rds_db_name: "{{ ansible_facts['cloudformation'][rds_stack_name]['stack_outputs']['DatabaseName'] }}"
     rds_db_sg: "{{ ansible_facts['cloudformation'][rds_stack_name]['stack_outputs']['DatabaseSecurityGroup'] }}"
 
 - name: Wait for mysql connection
