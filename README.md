@@ -41,5 +41,6 @@ You should use AWS as you cloud provider and you must provide the aws_access_key
 - https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-vpc.html
 - https://boto3.readthedocs.io/en/latest/guide/configuration.html
 - https://boto3.readthedocs.io/en/latest/reference/services/ecr.html
+- https://docs.docker.com/compose/compose-file/
 - https://blog.toast38coza.me/custom-ansible-module-hello-world/
 - https://raw.githubusercontent.com/awslabs/aws-cloudformation-templates/master/aws/services/RDS/RDS_with_DBParameterGroup.yaml
