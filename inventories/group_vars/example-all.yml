@@ -10,3 +10,5 @@ db_user: root
 db_password: password
 db_instance_class: db.t2.micro
 ec2_sshport: 5224
+asg_max_size: 1
+asg_start_size: 1

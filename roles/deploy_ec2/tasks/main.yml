@@ -54,8 +54,8 @@
       SshPort: "{{ ec2_sshport }}"
       ServerFromPort: "{{ app_port }}"
       ServerToPort: "{{ app_port }}"
-      MaxSize: 1
-      StartSize: 1 
+      MaxSize: "{{ asg_max_size }}"
+      StartSize: "{{ asg_start_size }}" 
       AlbScheme: internet-facing
       RegistryURL: "{{ ecr_url }}"
     tags:
