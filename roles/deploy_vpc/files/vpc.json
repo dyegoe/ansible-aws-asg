@@ -29,7 +29,7 @@
             "Properties": {
                 "CidrBlock": { "Ref": "VpcCidrBlock" },
                 "EnableDnsSupport": "true",
-                "EnableDnsHostnames": "false",
+                "EnableDnsHostnames": "true",
                 "InstanceTenancy": "default",
                 "Tags": [
                     {
