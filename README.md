@@ -13,6 +13,7 @@ https://docs.ansible.com/ansible/2.6/modules/cloudformation_facts_module.html
 https://docs.ansible.com/ansible/2.5/modules/mysql_db_module.html
 https://docs.ansible.com/ansible/2.6/modules/wait_for_module.html
 
+https://awspolicygen.s3.amazonaws.com/policygen.html
 https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-rds-database-instance.html
 https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecr-repository.html
 https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-subnet-route-table-assoc.html
