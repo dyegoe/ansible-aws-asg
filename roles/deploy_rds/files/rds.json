@@ -55,6 +55,7 @@
                 "DBSubnetGroupName": { "Ref": "SubnetGroup" },
                 "AllocatedStorage": "20",
                 "DBInstanceClass": { "Ref": "DBInstanceClass" },
+                "DBInstanceIdentifier": { "Fn::Join": [ "", [ { "Ref": "TagProject" }, "-rds1" ] ] },
                 "Engine": "MariaDB",
                 "EngineVersion": "10.2.12",
                 "MasterUsername": { "Ref": "DBUser" },
