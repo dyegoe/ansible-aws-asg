@@ -3,4 +3,13 @@ aws_access_key: put-here-your-access-key
 aws_secret_key: put-here-your-secret-key
 aws_region: us-east-1
 project_name: ansible-aws-asg
-app_git_repo: https://github.com/username/repo.git
+app_git_repo: https://github.com/username/repo.git]
+app_port: 5000
+db_name: dbtest
+db_user: root
+db_password: password
+db_instance_class: db.t2.micro
+ec2_sshport: 5224
+ec2_image_name: amzn-ami-minimal-hvm-2018.03.0.20180622-x86_64-ebs
+asg_max_size: 1
+asg_start_size: 1

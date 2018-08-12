@@ -7,20 +7,28 @@ RUN apk --update upgrade && \
                      openssl \
                      ca-certificates \
                      openssh-client \
+                     mariadb-client-libs \
                      bash \
                      bash-completion && \
-    apk --update add --virtual build-dependencies \
+    apk --update add --virtual build-dependencies-common \
                                python-dev \
                                libffi-dev \
-                               openssl-dev \
                                build-base && \
+    apk --update add --virtual build-dependencies-openssl \
+                               openssl-dev && \
     pip install --upgrade pip cffi && \
     pip install 'ansible>=2.5.0,<2.6.0' \
                 'docker-py' \
                 'boto3' \
                 'botocore' \
                 'awscli' && \
-    apk del build-dependencies && \
+    apk del build-dependencies-openssl && \
+    apk --update add --virtual build-dependencies-mariadb \
+                               libressl-dev \
+                               mariadb-dev && \
+    pip install 'MySQL-python' && \
+    apk del build-dependencies-mariadb && \
+    apk del build-dependencies-common && \
     rm -rf /var/cache/apk/*
 
 COPY source /tmp/source

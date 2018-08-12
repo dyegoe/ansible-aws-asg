@@ -18,6 +18,7 @@
   copy:
     content: "{{ key_pair['key']['private_key'] }}"
     dest: "files/{{ project_name }}.pem"
+    mode: 0400
   when: key_pair['changed']
 
 - name: Set VPC stack name
@@ -31,7 +32,7 @@
     region: "{{ aws_region }}"
     owners: amazon
     filters:
-      name: "amzn-ami-minimal-hvm-2018.03.0.20180622-x86_64-ebs"
+      name: "{{ ec2_image_name }}"
   register: ami_facts
 
 - name: Deploy an Auto Scaling stack
@@ -50,11 +51,11 @@
       VpcId: "{{ vpc_id }}"
       SubnetIds: "{{ subnet1_id }},{{ subnet2_id }},{{ subnet3_id }}"
       SubnetAZ: "{{ aws_region }}a,{{ aws_region }}b,{{ aws_region }}c"
-      SshPort: 5224
-      ServerFromPort: 5000
-      ServerToPort: 5000
-      MaxSize: 1
-      StartSize: 1 
+      SshPort: "{{ ec2_sshport }}"
+      ServerFromPort: "{{ app_port }}"
+      ServerToPort: "{{ app_port }}"
+      MaxSize: "{{ asg_max_size }}"
+      StartSize: "{{ asg_start_size }}" 
       AlbScheme: internet-facing
       RegistryURL: "{{ ecr_url }}"
     tags:

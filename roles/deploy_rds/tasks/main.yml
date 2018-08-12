@@ -1,0 +1,54 @@
+---
+- name: Set RDS stack name
+  set_fact:
+    rds_stack_name: "{{ project_name }}-rds"
+
+- name: Deploy a RDS stack
+  cloudformation:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ aws_region }}"
+    stack_name: "{{ rds_stack_name }}"
+    state: "present"
+    template: "roles/deploy_rds/files/rds.json"
+    template_parameters:
+      TagProject: "{{ project_name }}"
+      DBInstanceClass: "{{ db_instance_class }}"
+      DBName: "{{ db_name }}"
+      DBUser: "{{ db_user }}"
+      DBPassword: "{{ db_password }}"
+      VpcId: "{{ vpc_id }}"
+      SubnetIds: "{{ subnet1_id }},{{ subnet2_id }},{{ subnet3_id }}"
+    tags:
+      Stack: "{{ rds_stack_name }}"
+      Project: "{{ project_name }}"
+
+- name: Get RDS stack facts
+  cloudformation_facts:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ aws_region }}"
+    stack_name: "{{ rds_stack_name }}"
+
+- name: Set variables with cloudformation output
+  set_fact:
+    rds_db_host: "{{ ansible_facts['cloudformation'][rds_stack_name]['stack_outputs']['DatabaseHostname'] }}"
+    rds_db_port: "{{ ansible_facts['cloudformation'][rds_stack_name]['stack_outputs']['DatabasePort'] }}"
+    rds_db_name: "{{ ansible_facts['cloudformation'][rds_stack_name]['stack_outputs']['DatabaseName'] }}"
+    rds_db_sg: "{{ ansible_facts['cloudformation'][rds_stack_name]['stack_outputs']['DatabaseSecurityGroup'] }}"
+
+- name: Wait for mysql connection
+  wait_for:
+    host: "{{ rds_db_host }}"
+    port: "{{ rds_db_port }}"
+    delay: 10
+    state: started
+
+- name: Load dump file on the database server
+  mysql_db:
+    login_host: "{{ rds_db_host }}"
+    login_password: "{{ db_password }}"
+    login_port: "{{ rds_db_port }}"
+    login_user: "{{ db_user }}"
+    name: "{{ db_name }}"
+    state: present

@@ -1,14 +1,12 @@
 #!/usr/bin/python
 """
     This python script work as an ansible module.
-    It covers to get the authentication token from ECR using boto3 library.
-    It returns the token, user and endpoint.
-    To develop it, I used as reference this URL: https://blog.toast38coza.me/custom-ansible-module-hello-world/
+    It covers to remove all images before delete it.
 """
 
 __author__ = "Dyego Eugenio"
 __copyright__ = "Copyleft with your own risk"
-__credits__ = ["Dyego Eugenio", "Christo Crampton"]
+__credits__ = ["Dyego Eugenio"]
 __license__ = "GPL"
 __version__ = "1.0.0"
 __maintainer__ = "Dyego Eugenio"
@@ -18,15 +16,15 @@ __status__ = "Production"
 
 DOCUMENTATION = '''
 ---
-module: aws_ecr_login
-short_description: Get auth data from ecr
+module: aws_ecr_clean
+short_description: Remove all images from ecr repository
 author: Dyego Eugenio
 email: dyegoe@gmail.com
 '''
 
 EXAMPLES = '''
-- name: Get auth data from ecr
-  aws_ecr_login:
+- name: Remove all images from ecr repository
+  aws_ecr_clean:
         aws_access_key: "{{ aws_access_key }}"
         aws_secret_key: "{{ aws_secret_key }}"
         region: "{{ aws_region }}"
@@ -46,14 +44,15 @@ def main():
     fields = {
         "aws_access_key": {"required": True, "type": "str"},
         "aws_secret_key": {"required": True, "type": "str"},
-        "region": {"required": True, "type": "str"}
+        "region": {"required": True, "type": "str"},
+        "repository_name": {"required": True, "type": "str"}
     }
     module = AnsibleModule(argument_spec=fields)
-    has_changed, result = ecr_get_token(module.params)
+    has_changed, result = ecr_clean(module.params)
     module.exit_json(changed=has_changed, meta=result)
 
 
-def ecr_get_token(data):
+def ecr_clean(data):
     client = boto3.client(
         'ecr',
         aws_access_key_id=data['aws_access_key'],
@@ -61,22 +60,22 @@ def ecr_get_token(data):
         region_name=data['region']
     )
 
-    response = client.get_authorization_token()
-
-    match = re.match(
-        r'(.*):(.*)', base64.b64decode(response['authorizationData'][0]['authorizationToken'])
+    list_images = client.list_images(
+        repositoryName=data['repository_name'],
+        maxResults=1000
     )
 
-    meta = {}
-    if match:
-        meta = {
-            "username": match.group(1),
-            "token": match.group(2),
-            "endpoint": response['authorizationData'][0]['proxyEndpoint'],
-            "expires_at": response['authorizationData'][0]['expiresAt']
-        }
+    response = client.batch_delete_image(
+        repositoryName=data['repository_name'],
+        imageIds=list_images['imageIds']
+    )
 
+    meta = {
+        "imageIds": response['imageIds']
+    }
     has_changed = False
+    if len(meta['imageIds']) > 0:
+        has_changed = True
     return has_changed, meta
 
 
