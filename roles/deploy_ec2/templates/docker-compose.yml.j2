@@ -1,0 +1,12 @@
+version: '2.1'
+services:
+  python-rest:
+    image: '{{ ecr_url }}/{{ ecr_repo_name }}:latest'
+    container_name: python-rest
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      MYSQL_DATABASE_USERNAME: {{ db_user }}
+      MYSQL_DATABASE_PASSWORD: {{ db_password }}
+      MYSQL_DATABASE_DB: {{ db_name }}
+      MYSQL_DATABASE_HOST: {{ rds_db_host }}
