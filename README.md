@@ -10,6 +10,8 @@ https://docs.ansible.com/ansible/2.5/modules/docker_login_module.html
 https://docs.ansible.com/ansible/latest/user_guide/playbooks_best_practices.html
 https://docs.ansible.com/ansible/latest/modules/list_of_cloud_modules.html
 https://docs.ansible.com/ansible/2.6/modules/cloudformation_facts_module.html
+https://docs.ansible.com/ansible/2.5/modules/mysql_db_module.html
+https://docs.ansible.com/ansible/2.6/modules/wait_for_module.html
 
 https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-rds-database-instance.html
 https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecr-repository.html
@@ -27,3 +29,4 @@ https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-
 https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-vpc.html
 
 https://blog.toast38coza.me/custom-ansible-module-hello-world/
+https://raw.githubusercontent.com/awslabs/aws-cloudformation-templates/master/aws/services/RDS/RDS_with_DBParameterGroup.yaml
