@@ -56,6 +56,12 @@
             ]
         },
         {
+            "Effect": "Allow",
+            "Action": "rds:*",
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
             "Action": [
                 "iam:AddRoleToInstanceProfile",
                 "iam:RemoveRoleFromInstanceProfile",
@@ -67,9 +73,10 @@
                 "iam:DeleteRole",
                 "iam:PutRolePolicy",
                 "iam:DeleteRolePolicy",
-                "iam:PassRole"
+                "iam:PassRole",
+                "iam:CreateServiceLinkedRole",
+                "iam:DeleteServiceLinkedRole"
             ],
-            "Effect": "Allow",
             "Resource": "*"
         }
     ]
