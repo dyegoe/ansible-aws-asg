@@ -10,21 +10,21 @@
     version: "master"
     dest: "build/python-rest"
 
-- name: Get ecr credentials
+- name: Get ECR credentials
   aws_ecr_login:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
     region: "{{ aws_region }}"
   register: ecr_credentials
 
-- name: Docker login
+- name: Docker login to ECR
   docker_login:
     registry: "{{ ecr_credentials['meta']['endpoint'] }}"
     username: "{{ ecr_credentials['meta']['username'] }}"
     password: "{{ ecr_credentials['meta']['token'] }}"
     reauthorize: yes
 
-- name: Build app
+- name: Build and push app
   docker_image:
     name: "{{ ecr_url }}/{{ ecr_repo_name }}:latest"
     state: present
