@@ -21,6 +21,14 @@ RUN apk --update upgrade && \
                 'botocore' \
                 'awscli' && \
     apk del build-dependencies && \
+    apk --update add --virtual build-dependencies \
+                               python-dev \
+                               libffi-dev \
+                               libressl-dev \
+                               mariadb-dev \
+                               build-base && \
+    pip install 'MySQL-python' && \
+    apk del build-dependencies && \
     rm -rf /var/cache/apk/*
 
 COPY source /tmp/source
