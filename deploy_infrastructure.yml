@@ -5,4 +5,5 @@
     - build_app
     - deploy_vpc
     - deploy_rds
+    - deploy_keypair
     - deploy_ec2
