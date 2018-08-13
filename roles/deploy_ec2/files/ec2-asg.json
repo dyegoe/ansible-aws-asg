@@ -58,13 +58,25 @@
             "Description": "Number of instances to launch"
         },
         "AlbScheme": {
-            "Description": "ALB Scheme. It should be internet-facing or internal.",
+            "Description": "ALB Scheme. It should be internet-facing or internal",
             "Type": "String",
             "AllowedValues": [ "internet-facing", "internal"],
             "Default": "internet-facing"
         },
         "RegistryURL": {
             "Description": "Registry URL to include as insecure registry",
+            "Type": "String"
+        },
+        "Base64_aws_config": {
+            "Description": "An AWS config file in base64 encode",
+            "Type": "String"
+        },
+        "Base64_aws_credentials": {
+            "Description": "An AWS credentials file in base64 encode",
+            "Type": "String"
+        },
+        "Base64_docker_compose": {
+            "Description": "A docker-compose.yml file in base64 encode",
             "Type": "String"
         }
     },
@@ -248,16 +260,33 @@
                               "  - python27-pip",
                               "  - aws-cli",
                               "",
+                              "write_files:",
+                              "  - encoding: b64",
+                 { "Fn::Sub": "    content: ${Base64_aws_config}" },
+                              "    owner: root:root",
+                              "    path: /root/.aws/config",
+                              "    permissions: '0600'",
+                              "  - encoding: b64",
+                 { "Fn::Sub": "    content: ${Base64_aws_credentials}" },
+                              "    owner: root:root",
+                              "    path: /root/.aws/credentials",
+                              "    permissions: '0600'",
+                              "  - encoding: b64",
+                 { "Fn::Sub": "    content: ${Base64_docker_compose}" },
+                              "    owner: root:root",
+                              "    path: /root/docker-compose.yml",
+                              "    permissions: '0640'",
+                              "",
                               "runcmd:",
                               "  - rpm -ivh http://rpmfind.net/linux/centos/7.5.1804/os/x86_64/Packages/bash-completion-2.1-6.el7.noarch.rpm",
                               "  - pip install --upgrade pip",
                               "  - pip install docker-py",
-                              { "Fn::Sub": "  - sed -i -E 's?^(#|)Port .*?Port ${SshPort}?' /etc/ssh/sshd_config" },
+                 { "Fn::Sub": "  - sed -i -E 's?^(#|)Port .*?Port ${SshPort}?' /etc/ssh/sshd_config" },
                               "  - service sshd restart",
                               "  - echo '{' > /etc/docker/daemon.json",
                               "  - echo '    \"insecure-registries\":' >> /etc/docker/daemon.json",
                               "  - echo '    [' >> /etc/docker/daemon.json",
-                              { "Fn::Sub": "  - echo '        \"${RegistryURL}\"' >> /etc/docker/daemon.json" },
+                 { "Fn::Sub": "  - echo '        \"${RegistryURL}\"' >> /etc/docker/daemon.json" },
                               "  - echo '    ]' >> /etc/docker/daemon.json",
                               "  - echo '}' >> /etc/docker/daemon.json",
                               "  - chkconfig docker on",

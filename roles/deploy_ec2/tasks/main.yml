@@ -1,29 +1,9 @@
 ---
-- name: Create a new ec2 key pair
-  ec2_key:
-    aws_access_key: "{{ aws_access_key }}"
-    aws_secret_key: "{{ aws_secret_key }}"
-    region: "{{ aws_region }}"
-    name: "{{ project_name }}"
-    state: "present"
-  register: key_pair
-
-- name: Make sure that files dir exist
-  file:
-    path: "files/"
-    state: "directory"
-  when: key_pair['changed']
-
-- name: Copy private key content to a local file
-  copy:
-    content: "{{ key_pair['key']['private_key'] }}"
-    dest: "files/{{ project_name }}.pem"
-    mode: 0400
-  when: key_pair['changed']
-
 - name: Set VPC stack name
   set_fact:
     asg_stack_name: "{{ project_name }}-asg"
+
+- import_tasks: gen_base64_files.yml
 
 - name: Gather facts about ami
   ec2_ami_facts:
@@ -58,6 +38,9 @@
       StartSize: "{{ asg_start_size }}" 
       AlbScheme: internet-facing
       RegistryURL: "{{ ecr_url }}"
+      Base64_aws_config: "{{ aws_config_base64 }}"
+      Base64_aws_credentials: "{{ aws_credentials_base64 }}"
+      Base64_docker_compose: "{{ docker_compose_base64 }}"
     tags:
       Stack: "{{ asg_stack_name }}"
       Project: "{{ project_name }}"
