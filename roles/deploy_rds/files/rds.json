@@ -94,7 +94,7 @@
         "RdsSecurityGroup": {
             "Type": "AWS::EC2::SecurityGroup",
             "Properties": {
-                "GroupDescription": "Open ports to instances",
+                "GroupDescription": "Open ports to RDS",
                 "VpcId": { "Ref": "VpcId" },
                 "SecurityGroupIngress": [
                     {
