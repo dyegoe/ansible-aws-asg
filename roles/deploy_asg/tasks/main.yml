@@ -54,3 +54,6 @@
     alb_url: "{{ ansible_facts['cloudformation'][asg_stack_name]['stack_outputs']['AlbUrl'] }}"
     asg_sg: "{{ ansible_facts['cloudformation'][asg_stack_name]['stack_outputs']['AsgSecurityGroup'] }}"
     asg: "{{ ansible_facts['cloudformation'][asg_stack_name]['stack_outputs']['AutoScalingGroup'] }}"
+
+- name: Import task to restrict the RDS access only from EC2 instances
+  import_tasks: ../../deploy_rds/tasks/rds-sg.yml

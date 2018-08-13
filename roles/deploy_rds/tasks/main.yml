@@ -5,9 +5,6 @@
   set_fact:
     rds_stack_name: "{{ project_name }}-rds"
 
-- debug:
-    var: rds_sg
-
 - name: Deploy a RDS stack
   cloudformation:
     aws_access_key: "{{ aws_access_key }}"

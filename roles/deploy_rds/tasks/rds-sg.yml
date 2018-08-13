@@ -3,7 +3,7 @@
   set_fact:
     rds_sg_stack_name: "{{ project_name }}-rds-sg"
 
-- name: Deploy a RDS Security Group stack if asg_sg is not set
+- name: Deploy a RDS Security Group stack if asg_sg isn't set
   cloudformation:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
@@ -17,9 +17,9 @@
     tags:
       Stack: "{{ rds_sg_stack_name }}"
       Project: "{{ project_name }}"
-  when: not asg_sg
+  when: (asg_sg is undefined) or (asg_sg == '') or (asg_sg == None)
 
-- name: Deploy a RDS Security Group stack asg_sg not set
+- name: Deploy a RDS Security Group stack asg_sg is set
   cloudformation:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
@@ -34,7 +34,7 @@
     tags:
       Stack: "{{ rds_sg_stack_name }}"
       Project: "{{ project_name }}"
-  when: asg_sg
+  when: (asg_sg is defined) and (not asg_sg == '') and (not asg_sg == None)
 
 - name: Get RDS stack facts
   cloudformation_facts:
