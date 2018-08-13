@@ -6,4 +6,4 @@
     - deploy_vpc
     - deploy_rds
     - deploy_keypair
-    - deploy_ec2
+    - deploy_asg

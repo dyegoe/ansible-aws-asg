@@ -22,7 +22,7 @@
     region: "{{ aws_region }}"
     stack_name: "{{ asg_stack_name }}"
     state: "present"
-    template: "roles/deploy_ec2/files/ec2-asg.json"
+    template: "{{ ec2_cloudformation_tmp }}"
     template_parameters:
       TagProject: "{{ project_name }}"
       KeyName: "{{ project_name }}"
@@ -38,9 +38,6 @@
       StartSize: "{{ asg_start_size }}" 
       AlbScheme: internet-facing
       RegistryURL: "{{ ecr_url }}"
-      Base64_aws_config: "{{ aws_config_base64 }}"
-      Base64_aws_credentials: "{{ aws_credentials_base64 }}"
-      Base64_docker_compose: "{{ docker_compose_base64 }}"
     tags:
       Stack: "{{ asg_stack_name }}"
       Project: "{{ project_name }}"
