@@ -24,6 +24,7 @@ You should use AWS as you cloud provider and you must provide the aws_access_key
 - https://docs.ansible.com/ansible/2.6/modules/cloudformation_facts_module.html
 - https://docs.ansible.com/ansible/2.5/modules/mysql_db_module.html
 - https://docs.ansible.com/ansible/2.6/modules/wait_for_module.html
+- https://docs.ansible.com/ansible/2.5/modules/tempfile_module.html
 - https://awspolicygen.s3.amazonaws.com/policygen.html
 - https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-rds-database-instance.html
 - https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecr-repository.html
@@ -44,3 +45,4 @@ You should use AWS as you cloud provider and you must provide the aws_access_key
 - https://docs.docker.com/compose/compose-file/
 - https://blog.toast38coza.me/custom-ansible-module-hello-world/
 - https://raw.githubusercontent.com/awslabs/aws-cloudformation-templates/master/aws/services/RDS/RDS_with_DBParameterGroup.yaml
+- https://stackoverflow.com/questions/22978319/how-to-use-ansible-b64encode?rq=1
