@@ -1,0 +1,47 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Create a Security Group for RDS",
+    "Parameters": {
+        "TagProject": {
+            "Description": "Tag Project",
+            "Type": "String"
+        },
+        "VpcId": {
+            "Description": "VPC associated with the provided subnets",
+            "Type": "AWS::EC2::VPC::Id"
+        }
+    },
+    "Resources": {
+        "RdsSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "GroupDescription": "Open ports to RDS",
+                "VpcId": { "Ref": "VpcId" },
+                "SecurityGroupIngress": [
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": 3306,
+                        "ToPort": 3306,
+                        "CidrIp": "0.0.0.0/0"
+                    }
+                ],
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": { "Fn::Join": [ "", [ { "Ref": "TagProject" }, "-rds1-sg" ] ] }
+                    },
+                    {
+                        "Key": "Project",
+                        "Value": { "Ref": "TagProject" }
+                    }
+                ]
+            }
+        }
+    },
+    "Outputs": {
+        "DatabaseSecurityGroup": {
+            "Description": "Database security group",
+            "Value": { "Ref": "RdsSecurityGroup" }
+        }
+    }
+}

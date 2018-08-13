@@ -1,7 +1,12 @@
 ---
+- import_tasks: rds-sg.yml
+
 - name: Set RDS stack name
   set_fact:
     rds_stack_name: "{{ project_name }}-rds"
+
+- debug:
+    var: rds_sg
 
 - name: Deploy a RDS stack
   cloudformation:
@@ -19,6 +24,7 @@
       DBPassword: "{{ db_password }}"
       VpcId: "{{ vpc_id }}"
       SubnetIds: "{{ subnet1_id }},{{ subnet2_id }},{{ subnet3_id }}"
+      RdsSg: "{{ rds_sg }}"
     tags:
       Stack: "{{ rds_stack_name }}"
       Project: "{{ project_name }}"
@@ -35,7 +41,6 @@
     rds_db_host: "{{ ansible_facts['cloudformation'][rds_stack_name]['stack_outputs']['DatabaseHostname'] }}"
     rds_db_port: "{{ ansible_facts['cloudformation'][rds_stack_name]['stack_outputs']['DatabasePort'] }}"
     rds_db_name: "{{ ansible_facts['cloudformation'][rds_stack_name]['stack_outputs']['DatabaseName'] }}"
-    rds_db_sg: "{{ ansible_facts['cloudformation'][rds_stack_name]['stack_outputs']['DatabaseSecurityGroup'] }}"
 
 - name: Wait for mysql connection
   wait_for:

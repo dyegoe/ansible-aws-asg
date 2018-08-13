@@ -1,0 +1,48 @@
+---
+- name: Set RDS Secutiry Group stack name
+  set_fact:
+    rds_sg_stack_name: "{{ project_name }}-rds-sg"
+
+- name: Deploy a RDS Security Group stack if asg_sg is not set
+  cloudformation:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ aws_region }}"
+    stack_name: "{{ rds_sg_stack_name }}"
+    state: "present"
+    template: "roles/deploy_rds/files/rds-sg-open-world.json"
+    template_parameters:
+      TagProject: "{{ project_name }}"
+      VpcId: "{{ vpc_id }}"
+    tags:
+      Stack: "{{ rds_sg_stack_name }}"
+      Project: "{{ project_name }}"
+  when: not asg_sg
+
+- name: Deploy a RDS Security Group stack asg_sg not set
+  cloudformation:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ aws_region }}"
+    stack_name: "{{ rds_sg_stack_name }}"
+    state: "present"
+    template: "roles/deploy_rds/files/rds-sg-asg.json"
+    template_parameters:
+      TagProject: "{{ project_name }}"
+      VpcId: "{{ vpc_id }}"
+      AsgSg: "{{ asg_sg }}"
+    tags:
+      Stack: "{{ rds_sg_stack_name }}"
+      Project: "{{ project_name }}"
+  when: asg_sg
+
+- name: Get RDS stack facts
+  cloudformation_facts:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ aws_region }}"
+    stack_name: "{{ rds_sg_stack_name }}"
+
+- name: Set variables with cloudformation output
+  set_fact:
+    rds_sg: "{{ ansible_facts['cloudformation'][rds_sg_stack_name]['stack_outputs']['DatabaseSecurityGroup'] }}"
