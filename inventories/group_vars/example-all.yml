@@ -11,5 +11,5 @@ db_password: password
 db_instance_class: db.t2.micro
 ec2_sshport: 22
 ec2_image_name: amzn-ami-minimal-hvm-2018.03.0.20180622-x86_64-ebs
-asg_max_size: 1
-asg_start_size: 1
+asg_max_size: 3
+asg_start_size: 3
