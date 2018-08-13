@@ -22,7 +22,7 @@
     region: "{{ aws_region }}"
     stack_name: "{{ asg_stack_name }}"
     state: "present"
-    template: "{{ ec2_cloudformation_tmp }}"
+    template: "{{ asg_cloudformation_tmp['path'] }}"
     template_parameters:
       TagProject: "{{ project_name }}"
       KeyName: "{{ project_name }}"

@@ -60,13 +60,9 @@
   tempfile:
     state: file
     suffix: "-asg_cloudformation"
-  register: docker_compose_tmp
+  register: asg_cloudformation_tmp
 
-- name: Copy template to docker_compose temp file
+- name: Copy template to ASG cloudformation temp file
   template:
-    src: docker-compose.yml.j2
-    dest: "{{ docker_compose_tmp['path'] }}"
-
-- name: Get docker_compose_tmp file content
-  shell: "cat {{ docker_compose_tmp['path'] }}"
-  register: docker_compose_content
+    src: ec2-asg.json.j2
+    dest: "{{ asg_cloudformation_tmp['path'] }}"
