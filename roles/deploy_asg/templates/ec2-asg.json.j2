@@ -66,18 +66,6 @@
         "RegistryURL": {
             "Description": "Registry URL to include as insecure registry",
             "Type": "String"
-        },
-        "Base64_aws_config": {
-            "Description": "An AWS config file in base64 encode",
-            "Type": "String"
-        },
-        "Base64_aws_credentials": {
-            "Description": "An AWS credentials file in base64 encode",
-            "Type": "String"
-        },
-        "Base64_docker_compose": {
-            "Description": "A docker-compose.yml file in base64 encode",
-            "Type": "String"
         }
     },
     "Metadata": {},
@@ -262,17 +250,17 @@
                               "",
                               "write_files:",
                               "  - encoding: b64",
-                 { "Fn::Sub": "    content: ${Base64_aws_config}" },
+                              "    content: {{ aws_config_base64 }}",
                               "    owner: root:root",
                               "    path: /root/.aws/config",
                               "    permissions: '0600'",
                               "  - encoding: b64",
-                 { "Fn::Sub": "    content: ${Base64_aws_credentials}" },
+                              "    content: {{ aws_credentials_base64 }}",
                               "    owner: root:root",
                               "    path: /root/.aws/credentials",
                               "    permissions: '0600'",
                               "  - encoding: b64",
-                 { "Fn::Sub": "    content: ${Base64_docker_compose}" },
+                              "    content: {{ docker_compose_base64 }}",
                               "    owner: root:root",
                               "    path: /root/docker-compose.yml",
                               "    permissions: '0640'",

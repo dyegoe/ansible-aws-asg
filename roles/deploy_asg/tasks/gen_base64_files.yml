@@ -55,3 +55,14 @@
 - name: Set fact for docker_compose_base64
   set_fact:
     docker_compose_base64: "{{ docker_compose_content['stdout'] | b64encode }}"
+
+- name: Create a temp ASG cloudformation file
+  tempfile:
+    state: file
+    suffix: "-asg_cloudformation"
+  register: asg_cloudformation_tmp
+
+- name: Copy template to ASG cloudformation temp file
+  template:
+    src: ec2-asg.json.j2
+    dest: "{{ asg_cloudformation_tmp['path'] }}"
