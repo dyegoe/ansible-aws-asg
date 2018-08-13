@@ -2,6 +2,7 @@
 - hosts: all
   roles:
     - remove_ec2
+    - remove_keypair
     - remove_rds
     - remove_vpc
     - remove_ecr
