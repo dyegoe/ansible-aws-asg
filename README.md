@@ -13,6 +13,10 @@ An ansible playbook to deploy an infrastrucutre with these itens:
 
 TODO:
 
+## Limitations
+
+During the development I discovered that is no way to send a base64 as parameter content, so I move from cloudformation file to a jinja template and it will replace the jinja var with a base64 file content to use as cloud-init script. I include on the cloudformation the `.aws/config` and `.aws/credentials` to be create on launch and on the same way a `docker-compose.yml` to launch the app on the boot.
+
 ## Premisses
 
 I've tested this playbooks on aws account which has only an ECR endpoint. I was not tested using cross account ECR permissions. I can't guarantee that my module will work property if there are more than 1 endpoint.
@@ -44,6 +48,7 @@ You should use AWS as you cloud provider and you must provide the aws_access_key
 - https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-internetgateway.html
 - https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-route.html
 - https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-vpc.html
+- https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html
 - https://boto3.readthedocs.io/en/latest/guide/configuration.html
 - https://boto3.readthedocs.io/en/latest/reference/services/ecr.html
 - https://docs.docker.com/compose/compose-file/
