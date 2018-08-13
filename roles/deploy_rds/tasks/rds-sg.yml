@@ -3,6 +3,32 @@
   set_fact:
     rds_sg_stack_name: "{{ project_name }}-rds-sg"
 
+- ec2_group_facts:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ aws_region }}"
+    filters:
+      group-id: "{{ asg_sg }}"
+  when: (asg_sg is defined) and (not asg_sg == '') and (not asg_sg == None)
+  register: asg_sg_facts
+
+- debug:
+    msg: The ASG Security group var (asg_sg) has a wrong id on var files (inventories/groups_vars/all.yml)
+  when: asg_sg_facts['security_groups']|length==0
+
+- name: Unset asg_sg var
+  set_fact:
+    asg_sg:
+  when: asg_sg_facts['security_groups']|length==0
+
+- name: Update group_vars/all.yml and set asg_sg with ASG security group id
+  lineinfile:
+    path: "{{ playbook_dir }}/inventories/group_vars/all.yml"
+    state: present
+    regexp: '^asg_sg:.*'
+    line: "asg_sg:"
+  when: asg_sg_facts['security_groups']|length==0
+
 - name: Deploy a RDS Security Group stack if asg_sg isn't set
   cloudformation:
     aws_access_key: "{{ aws_access_key }}"

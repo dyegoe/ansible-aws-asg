@@ -45,6 +45,7 @@
     port: "{{ rds_db_port }}"
     delay: 10
     state: started
+  when: (asg_sg is undefined) or (asg_sg == '') or (asg_sg == None)
 
 - name: Load dump file on the database server
   mysql_db:
@@ -55,3 +56,4 @@
     name: "{{ db_name }}"
     state: import
     target: docs/sql/dump.sql
+  when: (asg_sg is undefined) or (asg_sg == '') or (asg_sg == None)
