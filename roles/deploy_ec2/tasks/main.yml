@@ -25,7 +25,7 @@
   set_fact:
     asg_stack_name: "{{ project_name }}-asg"
 
-- name: Gather facts about amzn-ami-minimal-hvm-2018.03.0.20180622-x86_64-ebs
+- name: Gather facts about ami
   ec2_ami_facts:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"

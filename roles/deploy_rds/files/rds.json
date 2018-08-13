@@ -123,11 +123,11 @@
             "Value": { "Fn::GetAtt": [ "DbInstance", "Endpoint.Address" ] }
         },
         "DatabasePort": {
-            "Description": "Database hostname",
+            "Description": "Database Port",
             "Value": { "Fn::GetAtt": [ "DbInstance", "Endpoint.Port" ] }
         },
         "DatabaseName": {
-            "Description": "Database hostname",
+            "Description": "Database Name",
             "Value": { "Ref": "DBName" }
         },
         "DatabaseSecurityGroup": {

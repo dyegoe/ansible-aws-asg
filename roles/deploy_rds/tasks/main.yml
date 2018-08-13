@@ -51,4 +51,5 @@
     login_port: "{{ rds_db_port }}"
     login_user: "{{ db_user }}"
     name: "{{ db_name }}"
-    state: present
+    state: import
+    target: docs/sql/dump.sql

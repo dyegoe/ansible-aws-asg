@@ -7,6 +7,7 @@ RUN apk --update upgrade && \
                      openssl \
                      ca-certificates \
                      openssh-client \
+                     mariadb-client \
                      mariadb-client-libs \
                      bash \
                      bash-completion && \
