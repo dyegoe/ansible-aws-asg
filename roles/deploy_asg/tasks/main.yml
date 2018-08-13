@@ -54,3 +54,13 @@
     alb_url: "{{ ansible_facts['cloudformation'][asg_stack_name]['stack_outputs']['AlbUrl'] }}"
     asg_sg: "{{ ansible_facts['cloudformation'][asg_stack_name]['stack_outputs']['AsgSecurityGroup'] }}"
     asg: "{{ ansible_facts['cloudformation'][asg_stack_name]['stack_outputs']['AutoScalingGroup'] }}"
+
+- name: Import task to restrict the RDS access only from EC2 instances
+  import_tasks: ../../deploy_rds/tasks/rds-sg.yml
+
+- name: Update group_vars/all.yml and set asg_sg with ASG security group id
+  lineinfile:
+    path: "{{ playbook_dir }}/inventories/group_vars/all.yml"
+    state: present
+    regexp: '^asg_sg:.*'
+    line: "asg_sg: {{ asg_sg }}"
