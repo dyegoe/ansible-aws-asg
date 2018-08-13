@@ -14,12 +14,12 @@
 
 - debug:
     msg: The ASG Security group var (asg_sg) has a wrong id on var files (inventories/groups_vars/all.yml)
-  when: asg_sg_facts['security_groups']|length==0
+  when: (asg_sg_facts['security_groups'] is defined) and (asg_sg_facts['security_groups']|length==0)
 
 - name: Unset asg_sg var
   set_fact:
     asg_sg:
-  when: asg_sg_facts['security_groups']|length==0
+  when: (asg_sg_facts['security_groups'] is defined) and (asg_sg_facts['security_groups']|length==0)
 
 - name: Update group_vars/all.yml and set asg_sg with ASG security group id
   lineinfile:
@@ -27,7 +27,7 @@
     state: present
     regexp: '^asg_sg:.*'
     line: "asg_sg:"
-  when: asg_sg_facts['security_groups']|length==0
+  when: (asg_sg_facts['security_groups'] is defined) and (asg_sg_facts['security_groups']|length==0)
 
 - name: Deploy a RDS Security Group stack if asg_sg isn't set
   cloudformation:
