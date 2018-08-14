@@ -1,4 +1,4 @@
 ---
-- hosts: local
-  roles:
-    - test_init
+- hosts: ec2
+  tasks:
+    - ping:
