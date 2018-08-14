@@ -22,7 +22,7 @@ I could be your desktop, a vm or an ec2 instance. It should have **git** install
 **OBS.:** This environment was tested using Ubuntu 18.04, 16.04 and CentOS 7
 
 ```text
-apt-get install git
+sudo apt-get install git
 or
 yum install git
 ```
@@ -30,7 +30,7 @@ yum install git
 You will need **Docker** installed.
 
 ```text
-apt-get install docker.io
+sudo apt-get install docker.io
 or
 yum install docker
 ```
@@ -40,18 +40,20 @@ Now, if you want to run the playbook from you computer, you should install the p
 #### Ubuntu 18.04
 
 ```text
-apt-get install awscli ansible python-boto3 python-botocore python-docker python-mysqldb mysql-client
+sudo apt-get install awscli ansible python-boto3 python-botocore python-docker python-mysqldb mysql-client
 ```
 
 #### Ubuntu 16.04
 
 ```text
-apt install python-pip libmysqlclient-dev mysql-client
-pip install --upgrade pip
-pip install -r https://raw.githubusercontent.com/dyegoe/ansible-aws-asg/master/docs/python/requirements.txt
+sudo apt install python-pip libmysqlclient-dev mysql-client
+sudo pip install --upgrade pip
+sudo pip install -r https://raw.githubusercontent.com/dyegoe/ansible-aws-asg/master/docs/python/requirements.txt
 ```
 
 #### CentOS 7.x
+
+*OBS* Run as root
 
 ```text
 yum install -y python-boto3 python-docker MySQL-python mariadb-client mardiadb-libs-dev epel-release
@@ -63,6 +65,8 @@ systemctl enable docker
 ```
 
 ## How to use
+
+As a **normal** user, run this commands.
 
 ```text
 git clone https://github.com/dyegoe/ansible-aws-asg.git
