@@ -1,5 +1,4 @@
 ---
 - hosts: ec2
-  tasks:
-    - debug:
-        var: project_name
+  roles:
+    - test_asg
