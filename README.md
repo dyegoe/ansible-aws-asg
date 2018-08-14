@@ -13,7 +13,7 @@ An ansible playbook to deploy an infrastrucutre with these itens:
 
 ### AWS Account
 
-This playbook was developed to run on aws, to execute it you must have an AWS account with at least the permission described on `docs/aws/aws-policy.json`. Use can create the user and attach the content as **Inline policy**. This account must has a **Programmatic access**. With the keys in hand, you should configure `inventories/group_vars/all.conf`.
+This playbook was developed to run on aws, to execute it you must have an AWS account with at least the permission described on `docs/aws/aws-policy.json`. Use can create the user and attach the content as **Inline policy**. This account must has a **Programmatic access**. With the keys in hand, you should configure `group_vars/all.conf`.
 
 ### A linux machine
 
@@ -82,8 +82,8 @@ Receiving objects: 100% (742/742), 108.75 KiB | 0 bytes/s, done.
 Resolving deltas: 100% (311/311), done.
 Checking connectivity... done.
 ubuntu@ip-172-31-25-18:~$ cd ansible-aws-asg/
-ubuntu@ip-172-31-25-18:~/ansible-aws-asg$ cp inventories/group_vars/example-all.yml inventories/group_vars/all.yml
-ubuntu@ip-172-31-25-18:~/ansible-aws-asg$ vi inventories/group_vars/all.yml
+ubuntu@ip-172-31-25-18:~/ansible-aws-asg$ cp group_vars/example-all.yml group_vars/all.yml
+ubuntu@ip-172-31-25-18:~/ansible-aws-asg$ vi group_vars/all.yml
 ```
 
 At this point, you must provide `aws_access_key` and `aws_secret_key`. Also you should configure `aws_region` of your preference.
@@ -235,6 +235,7 @@ Include avaibility zone on VPC CloudFormation to avoid the error when deploy it 
 - [Ansible Wait for module](https://docs.ansible.com/ansible/2.6/modules/wait_for_module.html)
 - [Ansible Tempfile module](https://docs.ansible.com/ansible/2.5/modules/tempfile_module.html)
 - [Ansible Lineinfile module](https://docs.ansible.com/ansible/2.5/modules/lineinfile_module.html)
+- [Ansible Working with Dynamic Inventory](https://docs.ansible.com/ansible/2.5/user_guide/intro_dynamic_inventory.html#example-aws-ec2-external-inventory-script)
 - [AWS CloudFormation Policy Gen](https://awspolicygen.s3.amazonaws.com/policygen.html)
 - [AWS CloudFormation RDS Properties](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-rds-database-instance.html)
 - [AWS CloudFormation ECR Repository](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecr-repository.html)
@@ -258,3 +259,4 @@ Include avaibility zone on VPC CloudFormation to avoid the error when deploy it 
 - [RDS DBParameterGroup](https://raw.githubusercontent.com/awslabs/aws-cloudformation-templates/master/aws/services/RDS/RDS_with_DBParameterGroup.yaml)
 - [Use Ansible base64 encode](https://stackoverflow.com/questions/22978319/how-to-use-ansible-b64encode?rq=1)
 - [Evaluate null ansible vars](https://github.com/ansible/ansible/issues/37441)
+- [SSH Key for Dynamic Inventory](https://stackoverflow.com/questions/33795607/how-to-define-ssh-private-key-for-servers-fetched-by-dynamic-inventory-in-files)

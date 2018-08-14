@@ -13,7 +13,7 @@
   register: asg_sg_facts
 
 - debug:
-    msg: The ASG Security group var (asg_sg) has a wrong id on var files (inventories/groups_vars/all.yml)
+    msg: The ASG Security group var (asg_sg) has a wrong id on var files (groups_vars/all.yml)
   when: (asg_sg_facts['security_groups'] is defined) and (asg_sg_facts['security_groups']|length==0)
 
 - name: Unset asg_sg var
@@ -23,7 +23,7 @@
 
 - name: Update group_vars/all.yml and set asg_sg with ASG security group id
   lineinfile:
-    path: "{{ playbook_dir }}/inventories/group_vars/all.yml"
+    path: "{{ playbook_dir }}/group_vars/all.yml"
     state: present
     regexp: '^asg_sg:.*'
     line: "asg_sg:"

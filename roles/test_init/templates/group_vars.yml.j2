@@ -1,0 +1,14 @@
+---
+alb_url: {{ alb_url }}
+asg_sg: {{ asg_sg }}
+asg: {{ asg }}
+ecr_url: {{ ecr_url }}
+ecr_repo_name: {{ ecr_repo_name }}
+rds_sg: {{ rds_sg }}
+vpc_id: {{ vpc_id }}
+subnet1_id: {{ subnet1_id }}
+subnet2_id: {{ subnet2_id }}
+subnet3_id: {{ subnet3_id }}
+ansible_ssh_private_key_file: files/{{ project_name }}.pem
+ansible_ssh_username: {{ ec2_sshusername }}
+ansible_ssh_port: {{ ec2_sshport }}

@@ -60,7 +60,7 @@
 
 - name: Update group_vars/all.yml and set asg_sg with ASG security group id
   lineinfile:
-    path: "{{ playbook_dir }}/inventories/group_vars/all.yml"
+    path: "{{ playbook_dir }}/group_vars/all.yml"
     state: present
     regexp: '^asg_sg:.*'
     line: "asg_sg: {{ asg_sg }}"
