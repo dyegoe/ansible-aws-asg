@@ -1,5 +1,5 @@
 ---
 - name: Create ec2.ini
-  tempale:
+  template:
     src: ec2.ini.j2
     dest: "{{ playbook_dir }}/inventories/ec2.ini"
