@@ -1,6 +1,7 @@
 .vscode/
 .idea/
 build/
+roles/remove_asg/vars/main.yml
 *.retry
 *.pem
 all.yml
