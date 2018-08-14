@@ -1,0 +1,35 @@
+[ec2]
+regions = {{ aws_region }}
+destination_variable = public_dns_name
+vpc_destination_variable = ip_address
+route53 = False
+elasticache = False
+all_instances = False
+all_rds_instances = False
+include_rds_clusters = False
+cache_path = ~/.ansible/tmp
+cache_max_age = 300
+nested_groups = False
+replace_dash_in_groups = True
+expand_csv_tags = False
+group_by_instance_id = True
+group_by_region = True
+group_by_availability_zone = True
+group_by_aws_account = False
+group_by_ami_id = True
+group_by_instance_type = True
+group_by_instance_state = False
+group_by_platform = True
+group_by_key_pair = True
+group_by_vpc_id = True
+group_by_security_group = True
+group_by_tag_keys = True
+group_by_tag_none = True
+group_by_route53_names = True
+group_by_rds_engine = True
+group_by_rds_parameter_group = True
+stack_filters = False
+instance_filters = tag:Project={{ project_name }}
+[credentials]
+aws_access_key_id = {{ aws_access_key }}
+aws_secret_access_key = {{ aws_secret_key }}
