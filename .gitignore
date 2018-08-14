@@ -2,6 +2,7 @@
 .idea/
 build/
 roles/remove_asg/vars/main.yml
+inventories/ec2.ini
 *.retry
 *.pem
 all.yml
