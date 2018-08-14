@@ -1,0 +1,21 @@
+---
+- name: Get ASG EC2 instances facts
+  ec2_instance_facts:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ aws_region }}"
+    filters:
+      "tag:Stack": "{{ project_name }}-asg"
+  register: asg_ec2_facts
+
+# - debug:
+#     msg: "[ASG][{{ item['tags']['Name'] }}]: {{ item['private_ip_address'] }} {{ item['public_dns_name'] }}"
+#   with_items: "{{ asg_ec2_facts['instances'] }}"
+
+- name: Include on Log
+  blockinfile:
+    path: "{{ test_log }}"
+    block: |
+      [ASG][{{ item['tags']['Name'] }}]: {{ item['private_ip_address'] }} {{ item['public_dns_name'] }}
+    marker: "# {mark} ANSIBLE MANAGED BLOCK {{ item.name }}"
+  with_items: "{{ asg_ec2_facts['instances'] }}"
