@@ -1,6 +1,0 @@
----
-- hosts: ec2
-  gather_facts: no
-  tasks:
-    - debug:
-        var: project_name
