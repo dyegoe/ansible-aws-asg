@@ -1,16 +1,25 @@
 ---
-- name: Get docker containers
+- name: "Get docker containers"
   shell: "docker ps -a --format {% raw %}'{{.ID}};{{.Names}};{{.Image}};{{.Status}}'{% endraw %}"
   register: docker_ps
 
-- name: debug
+- name: "debug"
   debug:
     var: docker_ps
 
-- name: URL
-  shell: "curl http://{{ ec2_private_ip_address }}:5000/users"
-  register: url
+- name: "Try to access the api using internet. {{}}"
+  uri:
+    url: "http://{{ ec2_private_ip_address }}:5000/users"
+    return_content: yes
+  register: webpage
 
-- name: debug
+
+- name: "Get API result"
+  uri:
+    url: "http://{{ ec2_private_ip_address }}:5000/users"
+    return_content: yes
+  register: webpage
+
+- name: "debug"
   debug:
     var: url

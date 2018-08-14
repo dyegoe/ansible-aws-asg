@@ -23,7 +23,7 @@ email: dyegoe@gmail.com
 '''
 
 EXAMPLES = '''
-- name: Remove all images from ecr repository
+- name: "Remove all images from ecr repository"
   aws_ecr_clean:
         aws_access_key: "{{ aws_access_key }}"
         aws_secret_key: "{{ aws_secret_key }}"

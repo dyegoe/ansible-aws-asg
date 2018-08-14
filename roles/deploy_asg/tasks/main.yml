@@ -1,11 +1,11 @@
 ---
-- name: Set VPC stack name
+- name: "Set VPC stack name"
   set_fact:
     asg_stack_name: "{{ project_name }}-asg"
 
 - import_tasks: gen_base64_files.yml
 
-- name: Gather facts about ami
+- name: "Gather facts about ami"
   ec2_ami_facts:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
@@ -15,7 +15,7 @@
       name: "{{ ec2_image_name }}"
   register: ami_facts
 
-- name: Deploy an Auto Scaling stack
+- name: "Deploy an Auto Scaling stack"
   cloudformation:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
@@ -42,23 +42,23 @@
       Stack: "{{ asg_stack_name }}"
       Project: "{{ project_name }}"
 
-- name: Get ASG stack facts
+- name: "Get ASG stack facts"
   cloudformation_facts:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
     region: "{{ aws_region }}"
     stack_name: "{{ asg_stack_name }}"
 
-- name: Set variables with cloudformation output
+- name: "Set variables with cloudformation output"
   set_fact:
     alb_url: "{{ ansible_facts['cloudformation'][asg_stack_name]['stack_outputs']['AlbUrl'] }}"
     asg_sg: "{{ ansible_facts['cloudformation'][asg_stack_name]['stack_outputs']['AsgSecurityGroup'] }}"
     asg: "{{ ansible_facts['cloudformation'][asg_stack_name]['stack_outputs']['AutoScalingGroup'] }}"
 
-- name: Import task to restrict the RDS access only from EC2 instances
+- name: "Import task to restrict the RDS access only from EC2 instances"
   import_tasks: ../../deploy_rds/tasks/rds-sg.yml
 
-- name: Update group_vars/all.yml and set asg_sg with ASG security group id
+- name: "Update group_vars/all.yml and set asg_sg with ASG security group id"
   lineinfile:
     path: "{{ playbook_dir }}/group_vars/all.yml"
     state: present

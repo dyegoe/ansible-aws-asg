@@ -25,7 +25,7 @@ email: dyegoe@gmail.com
 '''
 
 EXAMPLES = '''
-- name: Get auth data from ecr
+- name: "Get auth data from ecr"
   aws_ecr_login:
         aws_access_key: "{{ aws_access_key }}"
         aws_secret_key: "{{ aws_secret_key }}"

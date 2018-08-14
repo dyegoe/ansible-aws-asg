@@ -1,68 +1,68 @@
 ---
-- name: Create a temp aws_config file
+- name: "Create a temp aws_config file"
   tempfile:
     state: file
     suffix: "-aws_config"
   register: aws_config_tmp
 
-- name: Copy template to aws_config temp file
+- name: "Copy template to aws_config temp file"
   template:
     src: aws_config.j2
     dest: "{{ aws_config_tmp['path'] }}"
 
-- name: Get aws_config_tmp file content
+- name: "Get aws_config_tmp file content"
   shell: "cat {{ aws_config_tmp['path'] }}"
   register: aws_config_content
   
-- name: Set fact for aws_config_base64
+- name: "Set fact for aws_config_base64"
   set_fact:
     aws_config_base64: "{{ aws_config_content['stdout'] | b64encode }}"
 
-- name: Create a temp aws_credentials file
+- name: "Create a temp aws_credentials file"
   tempfile:
     state: file
     suffix: "-aws_credentials"
   register: aws_credentials_tmp
 
-- name: Copy template to aws_credentials temp file
+- name: "Copy template to aws_credentials temp file"
   template:
     src: aws_credentials.j2
     dest: "{{ aws_credentials_tmp['path'] }}"
 
-- name: Get aws_credentials_tmp file content
+- name: "Get aws_credentials_tmp file content"
   shell: "cat {{ aws_credentials_tmp['path'] }}"
   register: aws_credentials_content
   
-- name: Set fact for aws_credentials_base64
+- name: "Set fact for aws_credentials_base64"
   set_fact:
     aws_credentials_base64: "{{ aws_credentials_content['stdout'] | b64encode }}"
 
-- name: Create a temp docker_compose file
+- name: "Create a temp docker_compose file"
   tempfile:
     state: file
     suffix: "-docker_compose"
   register: docker_compose_tmp
 
-- name: Copy template to docker_compose temp file
+- name: "Copy template to docker_compose temp file"
   template:
     src: docker-compose.yml.j2
     dest: "{{ docker_compose_tmp['path'] }}"
 
-- name: Get docker_compose_tmp file content
+- name: "Get docker_compose_tmp file content"
   shell: "cat {{ docker_compose_tmp['path'] }}"
   register: docker_compose_content
   
-- name: Set fact for docker_compose_base64
+- name: "Set fact for docker_compose_base64"
   set_fact:
     docker_compose_base64: "{{ docker_compose_content['stdout'] | b64encode }}"
 
-- name: Create a temp ASG cloudformation file
+- name: "Create a temp ASG cloudformation file"
   tempfile:
     state: file
     suffix: "-asg_cloudformation"
   register: asg_cloudformation_tmp
 
-- name: Copy template to ASG cloudformation temp file
+- name: "Copy template to ASG cloudformation temp file"
   template:
     src: ec2-asg.json.j2
     dest: "{{ asg_cloudformation_tmp['path'] }}"

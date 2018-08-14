@@ -1,5 +1,5 @@
 ---
-- name: Set RDS Secutiry Group stack name
+- name: "Set RDS Secutiry Group stack name"
   set_fact:
     rds_sg_stack_name: "{{ project_name }}-rds-sg"
 
@@ -16,12 +16,12 @@
     msg: The ASG Security group var (asg_sg) has a wrong id on var files (groups_vars/all.yml)
   when: (asg_sg_facts['security_groups'] is defined) and (asg_sg_facts['security_groups']|length==0)
 
-- name: Unset asg_sg var
+- name: "Unset asg_sg var"
   set_fact:
     asg_sg:
   when: (asg_sg_facts['security_groups'] is defined) and (asg_sg_facts['security_groups']|length==0)
 
-- name: Update group_vars/all.yml and set asg_sg with ASG security group id
+- name: "Update group_vars/all.yml and set asg_sg with ASG security group id"
   lineinfile:
     path: "{{ playbook_dir }}/group_vars/all.yml"
     state: present
@@ -29,7 +29,7 @@
     line: "asg_sg:"
   when: (asg_sg_facts['security_groups'] is defined) and (asg_sg_facts['security_groups']|length==0)
 
-- name: Deploy a RDS Security Group stack if asg_sg isn't set
+- name: "Deploy a RDS Security Group stack if asg_sg isn't set"
   cloudformation:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
@@ -45,7 +45,7 @@
       Project: "{{ project_name }}"
   when: (asg_sg is undefined) or (asg_sg == '') or (asg_sg == None)
 
-- name: Deploy a RDS Security Group stack asg_sg is set
+- name: "Deploy a RDS Security Group stack asg_sg is set"
   cloudformation:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
@@ -62,13 +62,13 @@
       Project: "{{ project_name }}"
   when: (asg_sg is defined) and (not asg_sg == '') and (not asg_sg == None)
 
-- name: Get RDS stack facts
+- name: "Get RDS stack facts"
   cloudformation_facts:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
     region: "{{ aws_region }}"
     stack_name: "{{ rds_sg_stack_name }}"
 
-- name: Set variables with cloudformation output
+- name: "Set variables with cloudformation output"
   set_fact:
     rds_sg: "{{ ansible_facts['cloudformation'][rds_sg_stack_name]['stack_outputs']['DatabaseSecurityGroup'] }}"
