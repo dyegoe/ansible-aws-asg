@@ -34,3 +34,10 @@
     subnet1_id: "{{ ansible_facts['cloudformation'][vpc_stack_name]['stack_outputs']['Subnet1Id'] }}"
     subnet2_id: "{{ ansible_facts['cloudformation'][vpc_stack_name]['stack_outputs']['Subnet2Id'] }}"
     subnet3_id: "{{ ansible_facts['cloudformation'][vpc_stack_name]['stack_outputs']['Subnet3Id'] }}"
+
+- name: Update remove_rds/vars/main.yml and set vpc_id to future clean-up
+  lineinfile:
+    path: "{{ playbook_dir }}/roles/remove_asg/vars/main.yml"
+    state: present
+    regexp: '^vpc_id:.*'
+    line: "vpc_id: {{ vpc_id }}"

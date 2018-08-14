@@ -1,4 +1,19 @@
 ---
+- name: Remove ASG SG from RDS SG
+  cloudformation:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ aws_region }}"
+    stack_name: "{{ project_name }}-rds-sg"
+    state: "present"
+    template: "roles/deploy_rds/files/rds-sg-open-world.json"
+    template_parameters:
+      TagProject: "{{ project_name }}"
+      VpcId: "{{ vpc_id }}"
+    tags:
+      Stack: "{{ project_name }}-rds-sg"
+      Project: "{{ project_name }}"
+
 - name: Remove ASG stack
   cloudformation:
     aws_access_key: "{{ aws_access_key }}"

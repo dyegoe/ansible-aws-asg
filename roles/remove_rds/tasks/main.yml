@@ -6,3 +6,11 @@
     region: "{{ aws_region }}"
     stack_name: "{{ project_name }}-rds"
     state: "absent"
+
+- name: Remove RDS SG stack
+  cloudformation:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ aws_region }}"
+    stack_name: "{{ project_name }}-rds-sg"
+    state: "absent"
