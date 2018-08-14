@@ -25,8 +25,8 @@ I could be your desktop, a vm or an ec2 instance. It should have **git** install
 ubuntu@ip-172-31-25-18:~$ sudo apt-get update
 ubuntu@ip-172-31-25-18:~$ sudo apt-get install git
 or
-yum update
-yum install git
+[root@ip-172-31-22-97 ~]# yum update -y
+[root@ip-172-31-22-97 ~]# yum install -y git
 ```
 
 You will need **Docker** installed.
@@ -35,9 +35,10 @@ You will need **Docker** installed.
 ubuntu@ip-172-31-25-18:~$ sudo apt-get install docker.io
 ubuntu@ip-172-31-25-18:~$ sudo usermod -G docker ubuntu
 or
-yum install docker
-systemctl start docker
-systemctl enable docker
+[root@ip-172-31-22-97 ~]# yum install -y docker
+[root@ip-172-31-22-97 ~]# systemctl start docker
+[root@ip-172-31-22-97 ~]# systemctl enable docker
+[root@ip-172-31-22-97 ~]# usermod -G dockerroot centos
 ```
 
 Now, if you want to run the playbook from you computer, you should install the packages described below. But if you want to use a Docker container solution to run you playbook, you can skip those packages. I will describe how to build and execute the container.
@@ -47,13 +48,13 @@ Actually, any other distribution should work using container, as you have instal
 #### Ubuntu 18.04
 
 ```text
-ubuntu@ip-172-31-25-18:~$ sudo apt-get install awscli ansible python-boto3 python-botocore python-docker python-mysqldb mysql-client
+ubuntu@ip-172-31-25-18:~$ sudo apt-get -y install awscli ansible python-boto3 python-botocore python-docker python-mysqldb mysql-client
 ```
 
 #### Ubuntu 16.04
 
 ```text
-ubuntu@ip-172-31-25-18:~$ sudo apt-get install python-pip libmysqlclient-dev mysql-client
+ubuntu@ip-172-31-25-18:~$ sudo apt-get -y install python-pip libmysqlclient-dev mysql-client
 ubuntu@ip-172-31-25-18:~$ sudo pip install --upgrade pip
 ubuntu@ip-172-31-25-18:~$ sudo pip install -r https://raw.githubusercontent.com/dyegoe/ansible-aws-asg/master/docs/python/requirements.txt
 ```
@@ -61,10 +62,10 @@ ubuntu@ip-172-31-25-18:~$ sudo pip install -r https://raw.githubusercontent.com/
 #### CentOS 7.x
 
 ```text
-yum install -y python-boto3 python-docker MySQL-python mariadb-client mardiadb-libs-dev epel-release
-yum install -y python-pip
-pip install --upgrade pip
-pip install -r https://raw.githubusercontent.com/dyegoe/ansible-aws-asg/master/docs/python/requirements.txt
+[root@ip-172-31-22-97 ~]# yum install -y python-boto3 python-docker MySQL-python mariadb-client mardiadb-libs-dev epel-release
+[root@ip-172-31-22-97 ~]# yum install -y python-pip
+[root@ip-172-31-22-97 ~]# pip install --upgrade pip
+[root@ip-172-31-22-97 ~]# pip install -r https://raw.githubusercontent.com/dyegoe/ansible-aws-asg/master/docs/python/requirements.txt
 ```
 
 ## How to use
@@ -182,6 +183,20 @@ ok: [localhost]
 ```text
 ansible-playbook -i inventories/inventory.conf remove_infrastructure.yml
 ```
+
+## Deep view of this playbook
+
+I developed an ansible module to get ecr token to use as login on Docker to push image. I found solutions on internet using shell (inside ansible role) but I like the approach to have a solution inside the playbook. You can find on `library/`. There are also on module to clean up ECR before delete, because if it is not empty, it will block the ECR delete.
+
+Inside `docs/docker` I created some shell scripts and a Dockerfile to cover knowledge on these topics.
+
+You can find the dump file inside `docs/sql`.
+
+The `requirements.txt` for `pip` is on `docs/python`.
+
+Some roles I splited tasks more than just `main.yml` to use it again, as when I call the `deploy_rds/tasks/rds-sg.yml` from `deploy_asg/tasks/main.yml`. I'm using it because in the first time, the RDS is open to the world. After the creation of ASG (also EC2 instances), I update the cloudformation to restrict the access to 3306 just from EC2.
+
+I choose to develop a Rest api using pyhton and it consumes from RDS/MariaDB. The traffic is balanced using ALB.
 
 ## Limitations
 
