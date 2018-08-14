@@ -7,3 +7,4 @@
     - deploy_rds
     - deploy_keypair
     - deploy_asg
+    - test_init
