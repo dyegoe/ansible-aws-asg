@@ -1,4 +1,4 @@
 ---
-- hosts: all
+- hosts: local
   roles:
-    - get_asg
+    - test_init
