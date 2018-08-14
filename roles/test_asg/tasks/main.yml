@@ -7,19 +7,29 @@
   debug:
     var: docker_ps
 
-- name: "Try to access the api using internet. {{}}"
+- name: |
+    "Try to access the api using internet. http://{{ ansible_host }}:5000/users"
+    "It should fail, but the error will ignored because it expected."
   uri:
-    url: "http://{{ ec2_private_ip_address }}:5000/users"
+    url: "http://{{ ansible_host }}:5000/users"
     return_content: yes
-  register: webpage
-
-
-- name: "Get API result"
-  uri:
-    url: "http://{{ ec2_private_ip_address }}:5000/users"
-    return_content: yes
-  register: webpage
+  ignore_errors: true
+  register: uri_result
+  delegate_to: localhost
+  become: false
 
 - name: "debug"
   debug:
-    var: url
+    var: uri_result
+
+- name: |
+    "Try to access the api using from the instance. http://{{ ec2_private_ip_address }}:5000/users"
+    "It will return a result"
+  uri:
+    url: "http://{{ ec2_private_ip_address }}:5000/users"
+    return_content: yes
+  register: uri_result
+
+- name: "debug"
+  debug:
+    var: uri_result
