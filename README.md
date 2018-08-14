@@ -22,57 +22,67 @@ I could be your desktop, a vm or an ec2 instance. It should have **git** install
 **OBS.:** This environment was tested using Ubuntu 18.04, 16.04 and CentOS 7
 
 ```text
-sudo apt-get install git
+ubuntu@ip-172-31-25-18:~$ sudo apt-get update
+ubuntu@ip-172-31-25-18:~$ sudo apt-get install git
 or
+yum update
 yum install git
 ```
 
 You will need **Docker** installed.
 
 ```text
-sudo apt-get install docker.io
+ubuntu@ip-172-31-25-18:~$ sudo apt-get install docker.io
+ubuntu@ip-172-31-25-18:~$ sudo usermod -G docker ubuntu
 or
 yum install docker
+systemctl start docker
+systemctl enable docker
 ```
 
 Now, if you want to run the playbook from you computer, you should install the packages described below. But if you want to use a Docker container solution to run you playbook, you can skip those packages. I will describe how to build and execute the container.
 
+Actually, any other distribution should work using container, as you have installed Docker and run the scripts to build as a non-root user.
+
 #### Ubuntu 18.04
 
 ```text
-sudo apt-get install awscli ansible python-boto3 python-botocore python-docker python-mysqldb mysql-client
+ubuntu@ip-172-31-25-18:~$ sudo apt-get install awscli ansible python-boto3 python-botocore python-docker python-mysqldb mysql-client
 ```
 
 #### Ubuntu 16.04
 
 ```text
-sudo apt install python-pip libmysqlclient-dev mysql-client
-sudo pip install --upgrade pip
-sudo pip install -r https://raw.githubusercontent.com/dyegoe/ansible-aws-asg/master/docs/python/requirements.txt
+ubuntu@ip-172-31-25-18:~$ sudo apt-get install python-pip libmysqlclient-dev mysql-client
+ubuntu@ip-172-31-25-18:~$ sudo pip install --upgrade pip
+ubuntu@ip-172-31-25-18:~$ sudo pip install -r https://raw.githubusercontent.com/dyegoe/ansible-aws-asg/master/docs/python/requirements.txt
 ```
 
 #### CentOS 7.x
-
-*OBS* Run as root
 
 ```text
 yum install -y python-boto3 python-docker MySQL-python mariadb-client mardiadb-libs-dev epel-release
 yum install -y python-pip
 pip install --upgrade pip
 pip install -r https://raw.githubusercontent.com/dyegoe/ansible-aws-asg/master/docs/python/requirements.txt
-systemctl start docker
-systemctl enable docker
 ```
 
 ## How to use
 
-As a **normal** user, run this commands.
+As a **Non-Root** user, run this commands. This user should be able to perform **Docker** commands.
 
 ```text
-git clone https://github.com/dyegoe/ansible-aws-asg.git
-cd ansible-aws-asg/
-cp inventories/group_vars/example-all.yml inventories/group_vars/all.yml
-vi inventories/group_vars/all.yml
+ubuntu@ip-172-31-25-18:~$ git clone https://github.com/dyegoe/ansible-aws-asg.git
+Cloning into 'ansible-aws-asg'...
+remote: Counting objects: 742, done.
+remote: Compressing objects: 100% (24/24), done.
+remote: Total 742 (delta 9), reused 17 (delta 4), pack-reused 708
+Receiving objects: 100% (742/742), 108.75 KiB | 0 bytes/s, done.
+Resolving deltas: 100% (311/311), done.
+Checking connectivity... done.
+ubuntu@ip-172-31-25-18:~$ cd ansible-aws-asg/
+ubuntu@ip-172-31-25-18:~/ansible-aws-asg$ cp inventories/group_vars/example-all.yml inventories/group_vars/all.yml
+ubuntu@ip-172-31-25-18:~/ansible-aws-asg$ vi inventories/group_vars/all.yml
 ```
 
 At this point, you must provide `aws_access_key` and `aws_secret_key`. Also you should configure `aws_region` of your preference.
@@ -107,16 +117,70 @@ asg_max_size: 3
 asg_start_size: 3
 ```
 
-So, if you choose to run the playbook from docker, you can use the scripts located on `docs/docker/`.
+So, if you choose to run the playbook from docker, you can use the scripts located on `docs/docker/`. **Remember** Use a Non-Root user with Docker access.
 
 ```text
-./docs/docker/docker-build.sh
-./docs/docker/docker-run.sh
-./docs/docker/docker-exec.sh
+ubuntu@ip-172-31-25-18:~/ansible-aws-asg$ ./docs/docker/docker-build.sh
+ubuntu@ip-172-31-25-18:~/ansible-aws-asg$ ./docs/docker/docker-run.sh
+ubuntu@ip-172-31-25-18:~/ansible-aws-asg$ ./docs/docker/docker-exec.sh
 ```
 
+After the last script, you will enter on the container on the work directory, where you can find the playbooks.
+
 ```text
-ansible-playbook -i inventories/inventory.conf deploy_infrastructure.yml
+...
+...
+Removing intermediate container 6efc6287796d
+Step 4/4 : RUN adduser -D -u 1000 -h /home/ansible -s /bin/bash ansible &&     cp /tmp/source/.bashrc /home/ansible/.bashrc &&     chown -R ansible:ansible /home/ansible/.bashrc &&     mv /tmp/source/.bashrc /root/.bashrc &&     chown -R root:root /root/.bashrc &&     sed -i 's?/bin/ash?/bin/bash?' /etc/passwd &&     sed -i 's?root:x:0:root?root:x:0:root,ansible?' /etc/group &&     mkdir /etc/bash_completion.d/ &&     mv /tmp/source/docker /etc/bash_completion.d/docker &&     echo "complete -C '/usr/bin/aws_completer' aws" > /etc/bash_completion.d/aws &&     rm -rf /tmp/source
+ ---> Running in 0a77eeddb05e
+ ---> 33b2c79c1a20
+Removing intermediate container 0a77eeddb05e
+Successfully built 33b2c79c1a20
+ubuntu@ip-172-31-25-18:~/ansible-aws-asg$ ./docs/docker/docker-run.sh
+9ecca99b962e637e727394fb2dd9b450deec9be8910a1653d7da17c1ccc5a179
+ubuntu@ip-172-31-25-18:~/ansible-aws-asg$ ./docs/docker/docker-exec.sh
+ansible@9ecca99b962e:ansible-aws-asg $ ls -lah
+total 68
+drwxrwxr-x   11 ansible  ansible     4.0K Aug 14 01:40 .
+drwxr-sr-x    1 ansible  ansible     4.0K Aug 13 21:39 ..
+drwxrwxr-x    8 ansible  ansible     4.0K Aug 14 01:36 .git
+-rw-rw-r--    1 ansible  ansible       44 Aug 11 17:24 .gitignore
+drwxrwxr-x    3 ansible  ansible     4.0K Aug 12 13:28 .idea
+drwxrwxr-x    2 ansible  ansible     4.0K Aug 11 23:21 .vscode
+-rw-rw-r--    1 ansible  ansible     8.5K Aug 14 01:16 README.md
+drwxr-xr-x    3 ansible  ansible     4.0K Aug 11 18:06 build
+-rw-rw-r--    1 ansible  ansible      130 Aug 13 16:31 deploy_infrastructure.yml
+drwxrwxr-x    6 ansible  ansible     4.0K Aug 13 23:10 docs
+drwxr-xr-x    2 ansible  ansible     4.0K Aug 13 16:17 files
+drwxrwxr-x    3 ansible  ansible     4.0K Aug  7 21:08 inventories
+drwxrwxr-x    2 ansible  ansible     4.0K Aug 12 13:25 library
+-rw-rw-r--    1 ansible  ansible      114 Aug 14 01:04 remove_infrastructure.yml
+drwxrwxr-x   13 ansible  ansible     4.0K Aug 13 16:30 roles
+ansible@9ecca99b962e:ansible-aws-asg $
+```
+
+### To deploy
+
+```text
+ansible@9ecca99b962e:ansible-aws-asg $ ansible-playbook -i inventories/inventory.conf deploy_infrastructure.yml
+
+PLAY [all] ******************************************************************************************
+
+TASK [Gathering Facts] ******************************************************************************************
+ok: [localhost]
+
+TASK [deploy_ecr : Set ECR stack name] ******************************************************************************************
+ok: [localhost]
+
+
+... continue ...
+
+```
+
+### To remove
+
+```text
+ansible-playbook -i inventories/inventory.conf remove_infrastructure.yml
 ```
 
 ## Limitations
