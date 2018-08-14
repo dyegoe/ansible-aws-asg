@@ -1,21 +1,16 @@
 ---
-- name: Get ASG EC2 instances facts
-  ec2_instance_facts:
-    aws_access_key: "{{ aws_access_key }}"
-    aws_secret_key: "{{ aws_secret_key }}"
-    region: "{{ aws_region }}"
-    filters:
-      "tag:Stack": "{{ project_name }}-asg"
-  register: asg_ec2_facts
+- name: Get docker containers
+  shell: "docker ps -a --format {% raw %}'{{.ID}};{{.Names}};{{.Image}};{{.Status}}'{% endraw %}"
+  register: docker_ps
 
-# - debug:
-#     msg: "[ASG][{{ item['tags']['Name'] }}]: {{ item['private_ip_address'] }} {{ item['public_dns_name'] }}"
-#   with_items: "{{ asg_ec2_facts['instances'] }}"
+- name: debug
+  debug:
+    var: docker_ps
 
-- name: Include on Log
-  blockinfile:
-    path: "{{ test_log }}"
-    block: |
-      [ASG][{{ item['tags']['Name'] }}]: {{ item['private_ip_address'] }} {{ item['public_dns_name'] }}
-    marker: "# {mark} ANSIBLE MANAGED BLOCK {{ item.name }}"
-  with_items: "{{ asg_ec2_facts['instances'] }}"
+- name: URL
+  shell: "curl http://{{ ec2_private_ip_address }}:5000/users"
+  register: url
+
+- name: debug
+  debug:
+    var: url
