@@ -4,7 +4,7 @@
   roles:
     - test_env_localhost
 
-- hosts: ec2
-  become: yes
-  roles:
-    - test_env_remote
+#- hosts: ec2
+#  become: yes
+#  roles:
+#    - test_env_remote
