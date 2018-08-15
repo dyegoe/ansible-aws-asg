@@ -220,6 +220,10 @@ I've tested this playbooks on aws account which has only an ECR endpoint. I was 
 
 You should use AWS as you cloud provider and you must provide the aws_access_key and aws_secret_key. This account must has the rights to create and delete the resources. You can find a policy example on `docs/aws/aws-policy.json`. This playbook doesn't cover the user creation.
 
+## Know errors
+
+If you try to deploy again the same project name, in a new git clone directory, when the playbook deploy the key_pair it didn't key the private key value because aws only provides it when you generate on the first time. Without the private key on the new directory, you cannot proceed with the tests.
+
 ## To improve
 
 Include avaibility zone on VPC CloudFormation to avoid the error when deploy it on regions that don't have avaibility zones `b`.
