@@ -44,5 +44,6 @@
   lineinfile:
     path: "{{ playbook_dir }}/roles/remove_asg/vars/main.yml"
     state: present
+    create: yes
     regexp: '^vpc_id:.*'
     line: "vpc_id: {{ vpc_id }}"
