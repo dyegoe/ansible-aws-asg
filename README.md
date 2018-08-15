@@ -200,7 +200,11 @@ I choose to develop a Rest api using pyhton and it consumes from RDS/MariaDB. Th
 
 ## Limitations
 
-During the development I discovered that is no way to send a base64 as parameter content, so I move from cloudformation file to a jinja template and it will replace the jinja var with a base64 file content to use as cloud-init script. I include on the cloudformation the `.aws/config` and `.aws/credentials` to be create on launch and on the same way a `docker-compose.yml` to launch the app on the boot.
+### Cloudformation doesn't accept base64 as parameter value
+
+During the development I discovered that is no way to send a base64 as parameter content, so I move from cloudformation file to a jinja template and it will replace the jinja var with a base64 file content to use as cloud-init script. I include on the cloudformation the `.aws/config` and `.aws/credentials` to be create on launch and on the same way a `docker-compose.yml` to launch the app on the boot
+
+### Regions with less than 3 AZ
 
 As described before, you must avoid the regions that have less than 3 AZ.
 
@@ -214,15 +218,15 @@ As described before, you must avoid the regions that have less than 3 AZ.
 "us-west-1a", "us-west-1c"
 ```
 
+### Key_pair issue
+
+If you try to deploy again the same project name, in a new git clone directory, when the playbook deploy the key_pair it didn't key the private key value because aws only provides it when you generate on the first time. Without the private key on the new directory, you cannot proceed with the tests.
+
 ## Premisses
 
 I've tested this playbooks on aws account which has only an ECR endpoint. I was not tested using cross account ECR permissions. I can't guarantee that my module will work property if there are more than 1 endpoint.
 
 You should use AWS as you cloud provider and you must provide the aws_access_key and aws_secret_key. This account must has the rights to create and delete the resources. You can find a policy example on `docs/aws/aws-policy.json`. This playbook doesn't cover the user creation.
-
-## Know errors
-
-If you try to deploy again the same project name, in a new git clone directory, when the playbook deploy the key_pair it didn't key the private key value because aws only provides it when you generate on the first time. Without the private key on the new directory, you cannot proceed with the tests.
 
 ## To improve
 
