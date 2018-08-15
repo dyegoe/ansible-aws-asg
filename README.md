@@ -48,7 +48,7 @@ Actually, any other distribution should work using container, as you have instal
 #### Ubuntu 18.04
 
 ```text
-ubuntu@ip-172-31-25-18:~$ sudo apt-get -y install awscli ansible python-boto3 python-botocore python-docker python-mysqldb mysql-client
+ubuntu@ip-172-31-25-18:~$ sudo apt-get -y install awscli ansible python-boto python-boto3 python-botocore python-docker python-mysqldb mysql-client
 ```
 
 #### Ubuntu 16.04
