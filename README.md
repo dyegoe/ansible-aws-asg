@@ -223,6 +223,7 @@ You should use AWS as you cloud provider and you must provide the aws_access_key
 ## To improve
 
 Include avaibility zone on VPC CloudFormation to avoid the error when deploy it on regions that don't have avaibility zones `b`.
+Implement tests inside python modules, as: Check paths, return error if cannot connect, etc.
 
 ## References
 

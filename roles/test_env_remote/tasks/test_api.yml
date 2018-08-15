@@ -1,0 +1,13 @@
+---
+- name: |
+    "Access the api from the instance itself.
+    "http://{{ ec2_private_ip_address }}:5000/users"
+    "It will return a result with the users."
+  uri:
+    url: "http://{{ ec2_private_ip_address }}:5000/users"
+    return_content: yes
+  register: test_result
+
+- name: "Debug result"
+  debug:
+    var: test_result

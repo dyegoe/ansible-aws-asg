@@ -1,18 +1,4 @@
 ---
-- name: |
-    "Try to access the RDS directly using internet.
-    "mysql://{{ db_user }}:{{ db_password }}@{{ rds_db_host }}/{{ rds_db_name }}"
-    "It should >>fail<<, as the playbook create a SG that doesn't allow it."
-  shell: "mysql -u{{ db_user }} -p{{ db_password }} -h {{ rds_db_host }} {{ rds_db_name }} -NB --xml -e '{{ db_query }}'"
-  ignore_errors: true
-  delegate_to: localhost
-  become: false
-  register: test_result
-
-- name: "Debug result"
-  debug:
-    var: test_result
-
 - name: "Install required package (mysql)"
   package:
     name: "mysql55"

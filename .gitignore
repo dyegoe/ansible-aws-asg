@@ -3,6 +3,7 @@
 build/
 group_vars/ec2.yml
 group_vars/all.yml
+host_vars/localhost.yml
 roles/remove_asg/vars/main.yml
 inventories/ec2.ini
 *.retry

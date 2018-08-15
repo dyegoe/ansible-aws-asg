@@ -6,21 +6,6 @@
     url: "http://{{ ansible_host }}:5000/users"
     return_content: yes
   ignore_errors: true
-  delegate_to: localhost
-  become: false
-  register: test_result
-
-- name: "Debug result"
-  debug:
-    var: test_result
-
-- name: |
-    "Access the api from the instance itself.
-    "http://{{ ec2_private_ip_address }}:5000/users"
-    "It will return a result with the users."
-  uri:
-    url: "http://{{ ec2_private_ip_address }}:5000/users"
-    return_content: yes
   register: test_result
 
 - name: "Debug result"
@@ -34,8 +19,6 @@
   uri:
     url: "http://{{ alb_url }}/users"
     return_content: yes
-  delegate_to: localhost
-  become: false
   register: test_result
 
 - name: "Debug result"
