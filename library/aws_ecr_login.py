@@ -36,7 +36,7 @@ EXAMPLES = '''
         var: result
 '''
 
-from ansible.module_utils.basic import *
+from ansible.module_utils.basic import AnsibleModule
 import boto3
 import base64
 import re
