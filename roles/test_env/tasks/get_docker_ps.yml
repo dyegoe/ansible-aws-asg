@@ -1,0 +1,8 @@
+---
+- name: "Get docker containers"
+  shell: "docker ps -a --format {% raw %}'{{.ID}};{{.Names}};{{.Image}};{{.Status}}'{% endraw %}"
+  register: test_result
+
+- name: "Debug result"
+  debug:
+    var: test_result

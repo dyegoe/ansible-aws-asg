@@ -2,4 +2,4 @@
 - hosts: ec2
   become: yes
   roles:
-    - test_asg
+    - test_env

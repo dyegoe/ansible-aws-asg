@@ -1,0 +1,43 @@
+- name: |
+    "Try to access the api directly on the host using internet.
+    "http://{{ ansible_host }}:5000/users"
+    "It should >>fail<<, as the playbook create a SG that doesn't allow it."
+  uri:
+    url: "http://{{ ansible_host }}:5000/users"
+    return_content: yes
+  ignore_errors: true
+  delegate_to: localhost
+  become: false
+  register: test_result
+
+- name: "Debug result"
+  debug:
+    var: test_result
+
+- name: |
+    "Access the api from the instance itself.
+    "http://{{ ec2_private_ip_address }}:5000/users"
+    "It will return a result with the users."
+  uri:
+    url: "http://{{ ec2_private_ip_address }}:5000/users"
+    return_content: yes
+  register: test_result
+
+- name: "Debug result"
+  debug:
+    var: test_result
+
+- name: |
+    "Access the api using the ALB through the internet.
+    "http://{{ alb_url }}/users"
+    "It will return a result with the users."
+  uri:
+    url: "http://{{ alb_url }}/users"
+    return_content: yes
+  delegate_to: localhost
+  become: false
+  register: test_result
+
+- name: "Debug result"
+  debug:
+    var: test_result
