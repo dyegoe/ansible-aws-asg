@@ -8,7 +8,7 @@
     "Access the RDS from the instances.
     "mysql://{{ db_user }}:{{ db_password }}@{{ rds_db_host }}/{{ rds_db_name }}"
     "It will return a result with the users."
-  shell: "mysql -u{{ db_user }} -p{{ db_password }} -h {{ rds_db_host }} {{ rds_db_name }} -NB --xml -e '{{ db_query }}'"
+  shell: "mysql -u{{ db_user }} -p{{ db_password }} -h {{ rds_db_host }} {{ rds_db_name }} {{ db_query }}"
   register: test_result
 
 - name: "Debug result"

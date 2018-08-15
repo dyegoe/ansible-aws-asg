@@ -1,10 +1,11 @@
 - name: |
     "Try to access the api directly on the host using internet.
-    "http://{{ ansible_host }}:5000/users"
+    "http://{{ item }}:5000/users"
     "It should >>fail<<, as the playbook create a SG that doesn't allow it."
   uri:
-    url: "http://{{ ansible_host }}:5000/users"
+    url: "http://{{ item }}:5000/users"
     return_content: yes
+  with_items: "{{ groups['ec2'] }}"
   ignore_errors: true
   register: test_result
 
