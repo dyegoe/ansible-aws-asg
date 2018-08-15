@@ -1,6 +1,7 @@
 .vscode/
 .idea/
 build/
+logs/
 group_vars/ec2.yml
 group_vars/all.yml
 host_vars/localhost.yml
