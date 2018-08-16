@@ -22,8 +22,8 @@ I could be your desktop, a vm or an ec2 instance. It should have **git** install
 **OBS.:** This environment was tested using Ubuntu 18.04, 16.04 and CentOS 7
 
 ```text
-ubuntu@ip-172-31-25-18:~$ sudo apt-get update
-ubuntu@ip-172-31-25-18:~$ sudo apt-get install git
+ubuntu@ip-172-31-25-18:~$ sudo apt-get update -y
+ubuntu@ip-172-31-25-18:~$ sudo apt-get install -y git
 or
 [root@ip-172-31-22-97 ~]# yum update -y
 [root@ip-172-31-22-97 ~]# yum install -y git
@@ -32,16 +32,21 @@ or
 You will need **Docker** installed.
 
 ```text
-ubuntu@ip-172-31-25-18:~$ sudo apt-get install docker.io
+ubuntu@ip-172-31-25-18:~$ sudo apt-get install -y docker.io
 ubuntu@ip-172-31-25-18:~$ sudo usermod -G docker ubuntu
+ubuntu@ip-172-31-25-18:~$ logout
 or
 [root@ip-172-31-22-97 ~]# yum install -y docker
 [root@ip-172-31-22-97 ~]# systemctl start docker
 [root@ip-172-31-22-97 ~]# systemctl enable docker
-[root@ip-172-31-22-97 ~]# usermod -G dockerroot centos
+[root@ip-172-31-22-97 ~]# usermod -G root centos
+[root@ip-172-31-22-97 ~]# logout
+[centos@ip-172-31-22-97 ~]$ logout
 ```
 
-Now, if you want to run the playbook from you computer, you should install the packages described below. But if you want to use a Docker container solution to run you playbook, you can skip those packages. I will describe how to build and execute the container.
+And connect again!
+
+Now, if you want to run the playbook from you computer, you should install the packages described below. But if you want to use a Docker container solution to run your playbook, you can skip those packages. I will describe how to build and execute the container.
 
 Actually, any other distribution should work using container, as you have installed Docker and run the scripts to build as a non-root user.
 
@@ -54,15 +59,22 @@ ubuntu@ip-172-31-25-18:~$ sudo apt-get -y install awscli ansible python-boto pyt
 #### Ubuntu 16.04
 
 ```text
-ubuntu@ip-172-31-25-18:~$ sudo apt-get -y install python-pip libmysqlclient-dev mysql-client
+ubuntu@ip-172-31-25-18:~$ sudo apt-get install -y python-pip libmysqlclient-dev mysql-client
 ubuntu@ip-172-31-25-18:~$ sudo pip install --upgrade pip
 ubuntu@ip-172-31-25-18:~$ sudo pip install -r https://raw.githubusercontent.com/dyegoe/ansible-aws-asg/master/docs/python/requirements.txt
+```
+
+If you have some issue with locale as I had.
+
+```text
+ubuntu@ip-172-31-25-18:~$ export LC_ALL="en_US.UTF-8"
+ubuntu@ip-172-31-25-18:~$ export LC_CTYPE="en_US.UTF-8"
 ```
 
 #### CentOS 7.x
 
 ```text
-[root@ip-172-31-22-97 ~]# yum install -y python-boto3 python-docker MySQL-python mariadb-client mardiadb-libs-dev epel-release
+[root@ip-172-31-22-97 ~]# yum install -y python-boto3 python-docker MySQL-python mariadb mariadb-devel epel-release
 [root@ip-172-31-22-97 ~]# yum install -y python-pip
 [root@ip-172-31-22-97 ~]# pip install --upgrade pip
 [root@ip-172-31-22-97 ~]# pip install -r https://raw.githubusercontent.com/dyegoe/ansible-aws-asg/master/docs/python/requirements.txt
@@ -118,6 +130,8 @@ asg_max_size: 3
 asg_start_size: 3
 ```
 
+### Using the container to run the playbook
+
 So, if you choose to run the playbook from docker, you can use the scripts located on `docs/docker/`. **Remember** Use a Non-Root user with Docker access.
 
 ```text
@@ -167,21 +181,51 @@ ansible@9ecca99b962e:ansible-aws-asg $ ansible-playbook -i inventories/localhost
 
 PLAY [all] ******************************************************************************************
 
-TASK [Gathering Facts] ******************************************************************************************
+TASK [Gathering Facts] ******************************************************************************
 ok: [localhost]
 
-TASK [deploy_ecr : Set ECR stack name] ******************************************************************************************
+TASK [deploy_ecr : Set ECR stack name] **************************************************************
 ok: [localhost]
 
-
-... continue ...
+... the playbook continue
 
 ```
+
+### To test
+
+You should wait your infrastructure get ready and than you can run the playbook.
+
+```text
+ansible@9ecca99b962e:ansible-aws-asg $ ansible-playbook -i inventories/ec2.py test_infrastructure.yml
+
+PLAY [localhost] ************************************************************************************
+
+TASK [Gathering Facts] ******************************************************************************
+ok: [localhost]
+
+TASK [test_env_localhost : include_vars] ************************************************************
+ok: [localhost]
+
+TASK [test_env_localhost : "Try to access the RDS directly from this machine using internet."
+"It should >>fail<<, as the playbook create a SG that doesn't allow it."] ***************************
+fatal: [localhost]: FAILED! => {"changed": true, "cmd": "mysql -uroot -pui3krOCaPIsBnmnw -h test1-rds1.cl05xge8lnbu.eu-west-1.rds.amazonaws.com dbtest --connect-timeout=10 -B -e 'SELECT * FROM users;'", "delta": "0:00:10.049307", "end": "2018-08-16 21:35:24.656049", "msg": "non-zero return code", "rc": 1, "start": "2018-08-16 21:35:14.606742", "stderr": "mysql: [Warning] Using a password on the command line interface can be insecure.\nERROR 2003 (HY000): Can't connect to MySQL server on 'test1-rds1.cl05xge8lnbu.eu-west-1.rds.amazonaws.com' (110)", "stderr_lines": ["mysql: [Warning] Using a password on the command line interface can be insecure.", "ERROR 2003 (HY000): Can't connect to MySQL server on 'test1-rds1.cl05xge8lnbu.eu-west-1.rds.amazonaws.com' (110)"], "stdout": "", "stdout_lines": []}
+...ignoring
+
+TASK [test_env_localhost : Write test logs] *********************************************************
+ok: [localhost]
+
+... the playbook continue
+
+```
+
+This playbook will return some expected errors, that is because it tries to connect where is not possible as the playbook close the ports on the security groups.
+
+After it finishes, you can check the logs `logs/tests_result.log` (default directory or any other that you had configure on all.yml)
 
 ### To remove
 
 ```text
-ansible-playbook -i inventories/localhost.conf remove_infrastructure.yml
+ansible@9ecca99b962e:ansible-aws-asg $ ansible-playbook -i inventories/localhost.conf remove_infrastructure.yml
 ```
 
 ## Deep view of this playbook
