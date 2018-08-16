@@ -125,20 +125,28 @@ Logs from container start and the health checks request came from ALB.
 
 ![33](https://i.imgur.com/fJ1xKfc.png)
 
+As we figure out everything using the console, we can use the playbook to test
+
+![34](https://i.imgur.com/LOh3eUM.png)
+
+And check the logs to view the same results
+
+![35](https://i.imgur.com/CywSObU.png)
+
 Start to remove the resources
 
-![34](https://i.imgur.com/uL1TODB.png)
+![36](https://i.imgur.com/uL1TODB.png)
 
-![35](https://i.imgur.com/jnryxc3.png)
+![37](https://i.imgur.com/jnryxc3.png)
 
-![36](https://i.imgur.com/Sprbhfq.png)
+![38](https://i.imgur.com/Sprbhfq.png)
 
-![37](https://i.imgur.com/JJeVe9x.png)
+![39](https://i.imgur.com/JJeVe9x.png)
 
-![38](https://i.imgur.com/H2f8eFz.png)
+![40](https://i.imgur.com/H2f8eFz.png)
 
-![39](https://i.imgur.com/MglqUsG.png)
+![41](https://i.imgur.com/MglqUsG.png)
 
 No more Subnets, VPC, Instances. Everything is gone.
 
-![40](https://i.imgur.com/EBVcRjJ.png)
+![42](https://i.imgur.com/EBVcRjJ.png)
