@@ -163,7 +163,7 @@ ansible@9ecca99b962e:ansible-aws-asg $
 ### To deploy
 
 ```text
-ansible@9ecca99b962e:ansible-aws-asg $ ansible-playbook -i inventories/inventory.conf deploy_infrastructure.yml
+ansible@9ecca99b962e:ansible-aws-asg $ ansible-playbook -i inventories/localhost.conf deploy_infrastructure.yml
 
 PLAY [all] ******************************************************************************************
 
@@ -181,7 +181,7 @@ ok: [localhost]
 ### To remove
 
 ```text
-ansible-playbook -i inventories/inventory.conf remove_infrastructure.yml
+ansible-playbook -i inventories/localhost.conf remove_infrastructure.yml
 ```
 
 ## Deep view of this playbook
