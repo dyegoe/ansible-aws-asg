@@ -1,0 +1,4 @@
+---
+- include_vars: ../../group_vars/ec2.yml
+- import_tasks: get_db_data.yml
+- import_tasks: test_api.yml

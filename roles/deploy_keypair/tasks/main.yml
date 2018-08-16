@@ -1,5 +1,5 @@
 ---
-- name: Create a new ec2 key pair
+- name: "Create a new ec2 key pair"
   ec2_key:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
@@ -8,13 +8,13 @@
     state: "present"
   register: key_pair
 
-- name: Make sure that files dir exist
+- name: "Make sure that files dir exist"
   file:
     path: "files/"
     state: "directory"
   when: key_pair['changed']
 
-- name: Copy private key content to a local file
+- name: "Copy private key content to a local file"
   copy:
     content: "{{ key_pair['key']['private_key'] }}"
     dest: "files/{{ project_name }}.pem"

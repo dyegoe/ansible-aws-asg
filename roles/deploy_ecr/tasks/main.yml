@@ -1,9 +1,9 @@
 ---
-- name: Set ECR stack name
+- name: "Set ECR stack name"
   set_fact:
     ecr_stack_name: "{{ project_name }}-ecr"
 
-- name: Deploy a ECR stack
+- name: "Deploy a ECR stack"
   cloudformation:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
@@ -17,14 +17,14 @@
       Stack: "{{ ecr_stack_name }}"
       Project: "{{ project_name }}"
 
-- name: Get ECR stack facts
+- name: "Get ECR stack facts"
   cloudformation_facts:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
     region: "{{ aws_region }}"
     stack_name: "{{ ecr_stack_name }}"
 
-- name: Set variables with cloudformation output
+- name: "Set variables with cloudformation output"
   set_fact:
     ecr_url: "{{ ansible_facts['cloudformation'][ecr_stack_name]['stack_outputs']['Url'] }}"
     ecr_repo_name: "{{ ansible_facts['cloudformation'][ecr_stack_name]['stack_outputs']['RepositoryName'] }}"

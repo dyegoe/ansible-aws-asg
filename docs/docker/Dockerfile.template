@@ -20,6 +20,7 @@ RUN apk --update upgrade && \
     pip install --upgrade pip cffi && \
     pip install 'ansible>=2.5.0,<2.6.0' \
                 'docker-py' \
+                'boto' \
                 'boto3' \
                 'botocore' \
                 'awscli' && \

@@ -1,0 +1,45 @@
+---
+- name: |
+    "Try to access the api directly on the host using internet."
+    "It should >>fail<<, as the playbook create a SG that doesn't allow it."
+  uri:
+    url: "http://{{ item }}:5000/users"
+    return_content: yes
+  with_items: "{{ groups['ec2'] }}"
+  ignore_errors: true
+  register: test_result
+
+- name: "Write test logs"
+  write_test_logs:
+    description: "Try to access the api directly on the host using internet.
+    It should >>fail<<, as the playbook create a SG that doesn't allow it."
+    log_file: "{{ log_file }}"
+    log_dir: "{{ log_dir }}"
+    host: "{{ ansible_host }}"
+    input: "{{ test_result }}"
+    type: "uri"
+
+- name: |
+    "Access the api using the ALB through the internet."
+    "It will return a result with the users."
+  uri:
+    url: "http://{{ alb_url }}/users"
+    return_content: yes
+  with_items:
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+  register: test_result
+
+- name: "Write test logs"
+  write_test_logs:
+    description: "Access the api using the ALB through the internet.
+    It will return a result with the users."
+    log_file: "{{ log_file }}"
+    log_dir: "{{ log_dir }}"
+    host: "{{ ansible_host }}"
+    input: "{{ test_result }}"
+    type: "uri"

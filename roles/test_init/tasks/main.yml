@@ -1,0 +1,10 @@
+---
+- name: "Create ec2.ini"
+  template:
+    src: ec2.ini.j2
+    dest: "{{ playbook_dir }}/inventories/ec2.ini"
+
+- name: "Create group_vars for tests"
+  template:
+    src: group_vars.yml.j2
+    dest: "{{ playbook_dir }}/group_vars/ec2.yml"

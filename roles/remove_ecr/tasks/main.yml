@@ -1,12 +1,12 @@
 ---
-- name: Clean ECR repository first
+- name: "Clean ECR repository first"
   aws_ecr_clean:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
     region: "{{ aws_region }}"
     repository_name: "{{ project_name }}"
 
-- name: Remove ECR stack
+- name: "Remove ECR stack"
   cloudformation:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"

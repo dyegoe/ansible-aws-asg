@@ -1,9 +1,9 @@
 ---
-- name: Set VPC stack name
+- name: "Set VPC stack name"
   set_fact:
     vpc_stack_name: "{{ project_name }}-vpc"
 
-- name: Deploy a VPC stack
+- name: "Deploy a VPC stack"
   cloudformation:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
@@ -21,23 +21,29 @@
       Stack: "{{ vpc_stack_name }}"
       Project: "{{ project_name }}"
 
-- name: Get VPC stack facts
+- name: "Get VPC stack facts"
   cloudformation_facts:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
     region: "{{ aws_region }}"
     stack_name: "{{ vpc_stack_name }}"
 
-- name: Set variables with cloudformation output
+- name: "Set variables with cloudformation output"
   set_fact:
     vpc_id: "{{ ansible_facts['cloudformation'][vpc_stack_name]['stack_outputs']['VpcId'] }}"
     subnet1_id: "{{ ansible_facts['cloudformation'][vpc_stack_name]['stack_outputs']['Subnet1Id'] }}"
     subnet2_id: "{{ ansible_facts['cloudformation'][vpc_stack_name]['stack_outputs']['Subnet2Id'] }}"
     subnet3_id: "{{ ansible_facts['cloudformation'][vpc_stack_name]['stack_outputs']['Subnet3Id'] }}"
 
-- name: Update remove_rds/vars/main.yml and set vpc_id to future clean-up
+- name: "Make sure that build dir exist"
+  file:
+    path: "{{ playbook_dir }}/roles/remove_asg/vars/"
+    state: "directory"
+
+- name: "Update remove_rds/vars/main.yml and set vpc_id to future clean-up"
   lineinfile:
     path: "{{ playbook_dir }}/roles/remove_asg/vars/main.yml"
     state: present
+    create: yes
     regexp: '^vpc_id:.*'
     line: "vpc_id: {{ vpc_id }}"

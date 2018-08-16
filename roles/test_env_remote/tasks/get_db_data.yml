@@ -1,0 +1,28 @@
+---
+- name: "Install required package (mysql)"
+  package:
+    name: "mysql55"
+    state: present
+
+- name: |
+    "Access the RDS from the instances."
+    "It will return a result with the users."
+  shell: "mysql -u{{ db_user }} -p{{ db_password }} -h {{ rds_db_host }} {{ rds_db_name }} {{ db_query }}"
+  register: test_result
+
+- name: "Write test logs"
+  write_test_logs:
+    description: "Access the RDS from the instances.
+    It will return a result with the users."
+    log_file: "{{ log_file }}"
+    log_dir: "{{ log_dir }}"
+    host: "{{ ansible_host }}"
+    input: "{{ test_result }}"
+    type: "database"
+  delegate_to: localhost
+  become: false
+
+- name: "Remove unnecessary package (mysql)"
+  package:
+    name: "mysql55"
+    state: absent

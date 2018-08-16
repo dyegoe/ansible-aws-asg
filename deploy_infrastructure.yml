@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: local
   roles:
     - deploy_ecr
     - build_app
@@ -7,3 +7,4 @@
     - deploy_rds
     - deploy_keypair
     - deploy_asg
+    - test_init

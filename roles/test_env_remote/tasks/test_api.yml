@@ -1,0 +1,21 @@
+---
+- name: |
+    "Access the api from the instance itself.
+    "http://{{ ec2_private_ip_address }}:5000/users"
+    "It will return a result with the users."
+  uri:
+    url: "http://{{ ec2_private_ip_address }}:5000/users"
+    return_content: yes
+  register: test_result
+
+- name: "Write test logs"
+  write_test_logs:
+    description: "Access the RDS from the instances.
+    It will return a result with the users."
+    log_file: "{{ log_file }}"
+    log_dir: "{{ log_dir }}"
+    host: "{{ ansible_host }}"
+    input: "{{ test_result }}"
+    type: "uri"
+  delegate_to: localhost
+  become: false

@@ -1,0 +1,4 @@
+---
+- import_tasks: get_db_data.yml
+- import_tasks: get_docker_ps.yml
+- import_tasks: test_api.yml

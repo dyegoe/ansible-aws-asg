@@ -1,5 +1,5 @@
 ---
-- name: Remove ASG SG from RDS SG
+- name: "Remove ASG SG from RDS SG"
   cloudformation:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
@@ -14,7 +14,7 @@
       Stack: "{{ project_name }}-rds-sg"
       Project: "{{ project_name }}"
 
-- name: Remove ASG stack
+- name: "Remove ASG stack"
   cloudformation:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
