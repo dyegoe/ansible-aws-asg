@@ -1,7 +1,6 @@
 ---
 - name: |
-    "Try to access the RDS directly using internet.
-    "mysql://{{ db_user }}:{{ db_password }}@{{ rds_db_host }}/{{ rds_db_name }}"
+    "Try to access the RDS directly from this machine using internet."
     "It should >>fail<<, as the playbook create a SG that doesn't allow it."
   shell: "mysql -u{{ db_user }} -p{{ db_password }} -h {{ rds_db_host }} {{ rds_db_name }} {{ db_query }}"
   ignore_errors: true
@@ -9,9 +8,10 @@
 
 - name: "Write test logs"
   write_test_logs:
-    log_file: "tests_result.log"
-    log_dir: "{{ playbook_dir }}/logs/"
+    description: "Try to access the RDS directly from this machine using internet.
+    It should >>fail<<, as the playbook create a SG that doesn't allow it."
+    log_file: "{{ log_file }}"
+    log_dir: "{{ log_dir }}"
     host: "{{ ansible_host }}"
     input: "{{ test_result }}"
     type: "database"
-  register: debug

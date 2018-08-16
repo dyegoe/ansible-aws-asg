@@ -1,8 +1,16 @@
 ---
 - name: "Get docker containers"
-  shell: "docker ps -a --format {% raw %}'{{.ID}};{{.Names}};{{.Image}};{{.Status}}'{% endraw %}"
+  shell: "docker ps -a --format {% raw %}'{{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}'{% endraw %}"
   register: test_result
 
-- name: "Debug result"
-  debug:
-    var: test_result
+- name: "Write test logs"
+  write_test_logs:
+    description: "Access the RDS from the instances.
+    It will return a result with the users."
+    log_file: "{{ log_file }}"
+    log_dir: "{{ log_dir }}"
+    host: "{{ ansible_host }}"
+    input: "{{ test_result }}"
+    type: "docker"
+  delegate_to: localhost
+  become: false
