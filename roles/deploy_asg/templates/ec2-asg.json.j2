@@ -323,7 +323,7 @@
             "Value": { "Ref": "AsgSecurityGroup" }
         },
         "AlbUrl": {
-            "Description": "Aplication Load Balancer URL",
+            "Description": "Application Load Balancer URL",
             "Value": { "Fn::GetAtt" : [ "ApplicationLoadBalancer", "DNSName" ] }
         },
         "AutoScalingGroup": {
