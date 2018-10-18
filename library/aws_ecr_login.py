@@ -10,7 +10,7 @@ __author__ = "Dyego Eugenio"
 __copyright__ = "Copyleft with your own risk"
 __credits__ = ["Dyego Eugenio", "Christo Crampton"]
 __license__ = "GPL"
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 __maintainer__ = "Dyego Eugenio"
 __email__ = "dyegoe@gmail.com"
 __status__ = "Production"
@@ -64,7 +64,7 @@ def ecr_get_token(data):
     response = client.get_authorization_token()
 
     match = re.match(
-        r'(.*):(.*)', base64.b64decode(response['authorizationData'][0]['authorizationToken'])
+        r'(.*):(.*)', base64.b64decode(response['authorizationData'][0]['authorizationToken']).decode("utf-8")
     )
 
     meta = {}
