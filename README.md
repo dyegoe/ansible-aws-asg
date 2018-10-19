@@ -264,7 +264,7 @@ As described before, you must avoid the regions that have less than 3 AZ.
 
 ### Key_pair issue
 
-If you try to deploy again the same project name, in a new git clone directory, when the playbook deploy the key_pair it didn't key the private key value because aws only provides it when you generate on the first time. Without the private key on the new directory, you cannot proceed with the tests.
+If you try to deploy again the same project name, in a new git clone directory, when the playbook deploy the key_pair it didn't create the private key value because aws only provides it when you generate on the first time. Without the private key on the new directory, you cannot proceed with the tests.
 
 ## Premisses
 
